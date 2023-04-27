@@ -7,6 +7,26 @@ import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
 export class EthTransactionsController {
   constructor(private readonly ethTransactionsService: EthTransactionsService) {}
 
+  @Get('web3-client-version')
+  async getWeb3ClientVersion() {
+    const version = await this.ethTransactionsService.getWeb3ClientVersion();
+    return { version };
+  }
+
+  @Get('/hash/:transactionHash')
+  async getTransactionHash(@Param('transactionHash') transactionHash: string) {
+    const transaction = await this.ethTransactionsService.getTransaction(transactionHash);
+    return { transaction };
+  }
+
+  @Post()
+  async sendTransaction(@Body() createEthTransactionDto: CreateEthTransactionDto) {
+    const { from, to, value } = createEthTransactionDto;
+    const response = await this.ethTransactionsService.sendTransaction(from, to, value);
+    return response;
+  }
+
+
   @Post()
   create(@Body() createEthTransactionDto: CreateEthTransactionDto) {
     return this.ethTransactionsService.create(createEthTransactionDto);
