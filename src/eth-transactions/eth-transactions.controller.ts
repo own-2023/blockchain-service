@@ -7,7 +7,7 @@ import { instanceToPlain } from 'class-transformer';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {
-  constructor(private readonly ethTransactionsService: EthTransactionsService) {}
+  constructor(private readonly ethTransactionsService: EthTransactionsService) { }
 
   @Get('web3-client-version')
   async getWeb3ClientVersion() {
