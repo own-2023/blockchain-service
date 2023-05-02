@@ -2,15 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
 import Web3 from 'web3';
-import { EthTransaction } from './entities/eth-transaction.entity';
-import {InjectRepository} from '@nestjs/typeorm'
-import { Repository } from 'typeorm';
+import { TransactionRepo } from './repos/transaction.repo';
 
 @Injectable()
 export class EthTransactionsService {
 
   constructor(@Inject('WEB3') private readonly web3: Web3,
-  @InjectRepository(EthTransaction) private userTransactionRepository : Repository<EthTransaction>) {}
+  private readonly ethTransactionRepo: TransactionRepo,
+  ) {}
 
   async getWeb3ClientVersion(): Promise<string> {
     const version = await this.web3.eth.getNodeInfo();
@@ -46,8 +45,9 @@ export class EthTransactionsService {
     return 'This action adds a new ethTransaction';
   }
 
-  findAll() {
-    return `This action returns all ethTransactions`;
+  async findAll() {
+    return await this.ethTransactionRepo.findAll();
+    
   }
 
   findOne(id: number) {

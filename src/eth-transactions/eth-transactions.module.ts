@@ -3,10 +3,11 @@ import { EthTransactionsService } from './eth-transactions.service';
 import { EthTransactionsController } from './eth-transactions.controller';
 import Web3 from 'web3';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EthTransaction } from './entities/eth-transaction.entity';
+import { EthTransactionEntity } from './entities/eth-transaction.entity';
+import { TransactionRepo } from './repos/transaction.repo';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EthTransaction])],
+  imports: [TypeOrmModule.forFeature([EthTransactionEntity])],
   controllers: [EthTransactionsController],
   providers: [EthTransactionsService, {
     provide: 'WEB3',
@@ -15,7 +16,7 @@ import { EthTransaction } from './entities/eth-transaction.entity';
       const web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
       return web3;
     },
-  },],
+  }, TransactionRepo],
   exports: ['WEB3']
 })
 export class EthTransactionsModule { }

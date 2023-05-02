@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { EthTransactionsModule } from './eth-transactions/eth-transactions.module';
 import { IpfsModule } from './ipfs/ipfs.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EthTransaction } from './eth-transactions/entities/eth-transaction.entity';
+import { EthTransactionEntity } from './eth-transactions/entities/eth-transaction.entity';
 
 @Module({
   imports: [EthTransactionsModule, IpfsModule, TypeOrmModule.forRoot({
@@ -14,7 +14,7 @@ import { EthTransaction } from './eth-transactions/entities/eth-transaction.enti
     username: 'user123',
     password: 'root',
     database: 'db',
-    entities: [EthTransaction],
+    entities: [EthTransactionEntity],
     autoLoadEntities: true,
     synchronize: true,
   })],

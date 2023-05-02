@@ -33,8 +33,8 @@ export class EthTransactionsController {
   }
 
   @Get()
-  findAll() {
-    return this.ethTransactionsService.findAll();
+  async findAll() {
+    return await this.ethTransactionsService.findAll();
   }
 
   @Get(':id')

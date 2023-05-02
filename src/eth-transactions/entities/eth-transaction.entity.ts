@@ -5,7 +5,7 @@ import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
     name: 'ethtransactions',
     database: 'db',
 })
-export class EthTransaction {
+export class EthTransactionEntity {
     @PrimaryGeneratedColumn()
     transaction_id: number;
 
