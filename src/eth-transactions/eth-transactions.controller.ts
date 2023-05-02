@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { EthTransactionsService } from './eth-transactions.service';
 import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
+import { EthTransaction } from './entities/eth-transaction.entity';
+import { instanceToPlain } from 'class-transformer';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {
@@ -29,7 +31,8 @@ export class EthTransactionsController {
 
   @Post()
   create(@Body() createEthTransactionDto: CreateEthTransactionDto) {
-    return this.ethTransactionsService.create(createEthTransactionDto);
+    
+    return this.ethTransactionsService.create(instanceToPlain(createEthTransactionDto));
   }
 
   @Get()
