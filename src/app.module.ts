@@ -4,17 +4,17 @@ import { AppService } from './app.service';
 import { EthTransactionsModule } from './eth-transactions/eth-transactions.module';
 import { IpfsModule } from './ipfs/ipfs.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EthTransactionEntity } from './eth-transactions/entities/eth-transaction.entity';
+import { EthTransaction } from './eth-transactions/entities/eth-transaction.entity';
 
 @Module({
   imports: [EthTransactionsModule, IpfsModule, TypeOrmModule.forRoot({
     type: 'mysql',
-    host: 'localhost',
-    port: 3306,
+    host: 'host.docker.internal',
+    port: 4306,
     username: 'user123',
     password: 'root',
     database: 'db',
-    entities: [EthTransactionEntity],
+    entities: [EthTransaction],
     autoLoadEntities: true,
     synchronize: true,
   })],
