@@ -25,6 +25,8 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypass
       MYSQL_ROOT_PASSWORD: myrootpass
+    ports:
+      - "3303:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 
