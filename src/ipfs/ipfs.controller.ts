@@ -7,6 +7,15 @@ import { UpdateIpfDto } from './dto/update-ipf.dto';
 export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) {}
 
+  @Post('addString/:str')
+  async add(@Param('str') str: string) {
+    const  cid  = await this.ipfsService.add(str);
+    console.log(cid);
+    return cid;
+
+  }
+
+
   @Post()
   create(@Body() createIpfDto: CreateIpfDto) {
     return this.ipfsService.create(createIpfDto);
@@ -32,12 +41,6 @@ export class IpfsController {
     return this.ipfsService.remove(+id);
   }
 
-  @Post('addString/:str')
-  async add(@Param('str') str: string) {
-    const  cid  = await this.ipfsService.add(str);
-    console.log(cid);
-    return cid;
 
-  }
 
 }
