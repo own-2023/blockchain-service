@@ -4,12 +4,14 @@ import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
 import Web3 from 'web3';
 import { TransactionRepo } from './repos/transaction.repo';
 
+
 @Injectable()
 export class EthTransactionsService {
 
   constructor(@Inject('WEB3') private readonly web3: Web3,
   private readonly ethTransactionRepo: TransactionRepo,
   ) {}
+
 
   async getWeb3ClientVersion(): Promise<string> {
     const version = await this.web3.eth.getNodeInfo();
@@ -40,9 +42,9 @@ export class EthTransactionsService {
     return transactionHash.transactionHash;
   }
 
-  
-  create(createEthTransactionDto: CreateEthTransactionDto) {
-    return 'This action adds a new ethTransaction';
+
+  create(ethTransaction: EthTransaction) {
+    this.ethTransactionRepository.save([ethTransaction]);
   }
 
   async findAll() {
@@ -60,10 +62,6 @@ export class EthTransactionsService {
 
   remove(id: number) {
     return `This action removes a #${id} ethTransaction`;
-  }
-
-  add(createEthTransactionDto: CreateEthTransactionDto){
-
   }
 
 }
