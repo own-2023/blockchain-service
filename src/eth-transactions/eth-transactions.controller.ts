@@ -5,7 +5,7 @@ import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {
-  constructor(private readonly ethTransactionsService: EthTransactionsService) {}
+  constructor(private readonly ethTransactionsService: EthTransactionsService) { }
 
   @Get('web3-client-version')
   async getWeb3ClientVersion() {
