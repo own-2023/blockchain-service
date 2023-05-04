@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Res } from '@nestjs/common';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Res } from '@nestjs/common';
 import { EthTransactionsService } from './eth-transactions.service';
 import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
@@ -7,7 +6,6 @@ import { MintNftDto } from './dto/mint-nft.dto';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {
-  constructor(private readonly ethTransactionsService: EthTransactionsService) { }
   constructor(private readonly ethTransactionsService: EthTransactionsService) { }
 
   @Get('web3-client-version')
@@ -54,13 +52,6 @@ export class EthTransactionsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ethTransactionsService.remove(+id);
-  }
-
-  @Post('picture')
-  createPicture(@Body() body: MintNftDto){
-
-    console.log(body.nftName);
-    return 'Created';
   }
 
   @Post('picture')

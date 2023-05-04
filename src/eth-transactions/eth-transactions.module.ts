@@ -8,9 +8,7 @@ import { EthTransactionRepository } from './repos/transaction.repo';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EthTransaction])],
-  imports: [TypeOrmModule.forFeature([EthTransaction])],
   controllers: [EthTransactionsController],
-  providers: [EthTransactionsService, {
   providers: [EthTransactionsService, {
     provide: 'WEB3',
     useFactory: () => {
