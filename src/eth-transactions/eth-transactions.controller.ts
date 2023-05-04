@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Res } from
 import { EthTransactionsService } from './eth-transactions.service';
 import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
-import { EthTransaction } from './entities/eth-transaction.entity';
 import { MintNftDto } from './dto/mint-nft.dto';
 
 @Controller('eth-transactions')

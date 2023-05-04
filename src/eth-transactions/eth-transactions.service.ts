@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
+import { EthTransaction } from './entities/eth-transaction.entity';
 import Web3 from 'web3';
-import { TransactionRepo } from './repos/transaction.repo';
+import { EthTransactionRepository } from './repos/transaction.repo';
 
 
 @Injectable()
 export class EthTransactionsService {
 
   constructor(@Inject('WEB3') private readonly web3: Web3,
-  private readonly ethTransactionRepo: TransactionRepo,
+  private readonly ethTransactionRepository: EthTransactionRepository,
   ) {}
 
 
@@ -43,12 +44,12 @@ export class EthTransactionsService {
   }
 
 
-  create(ethTransaction: EthTransaction) {
+  create(ethTransaction: CreateEthTransactionDto) {
     this.ethTransactionRepository.save([ethTransaction]);
   }
 
   async findAll() {
-    return await this.ethTransactionRepo.findAll();
+    return await this.ethTransactionRepository.findAll();
     
   }
 
