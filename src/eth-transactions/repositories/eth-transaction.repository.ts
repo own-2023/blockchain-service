@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm'
 import { Repository } from 'typeorm';
-import { CreateEthTransactionDto } from '../dto/create-eth-transaction.dto';
+import { CreateEthTransactionDto } from '../dtos/create-eth-transaction.dto';
 import { EthTransaction } from '../entities/eth-transaction.entity';
-import { UpdateEthTransactionDto } from '../dto/update-eth-transaction.dto';
+import { UpdateEthTransactionDto } from '../dtos/update-eth-transaction.dto';
 
 @Injectable()
 export class EthTransactionRepository {
 
   constructor(
-  @InjectRepository(EthTransaction) private ethTrransactionRepository : Repository<EthTransaction>) {}
+  @InjectRepository(EthTransaction) private ethTransactionRepository : Repository<EthTransaction>) {}
 
 
   
@@ -21,7 +21,7 @@ export class EthTransactionRepository {
   }
 
   async findAll() {
-    console.log(await this.ethTrransactionRepository.find());
+    console.log(await this.ethTransactionRepository.find());
     return `This action returns all ethTransactions`;
   }
 

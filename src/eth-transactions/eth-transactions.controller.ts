@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Res } from '@nestjs/common';
 import { EthTransactionsService } from './eth-transactions.service';
-import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
-import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
-import { MintNftDto } from './dto/mint-nft.dto';
+import { CreateEthTransactionDto } from './dtos/create-eth-transaction.dto';
+import { UpdateEthTransactionDto } from './dtos/update-eth-transaction.dto';
+import { MintNftDto } from './dtos/mint-nft.dto';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {

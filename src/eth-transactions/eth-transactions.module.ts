@@ -4,7 +4,7 @@ import { EthTransactionsController } from './eth-transactions.controller';
 import Web3 from 'web3';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EthTransaction } from './entities/eth-transaction.entity';
-import { EthTransactionRepository } from './repos/transaction.repo';
+import { EthTransactionRepository } from './repositories/eth-transaction.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EthTransaction])],

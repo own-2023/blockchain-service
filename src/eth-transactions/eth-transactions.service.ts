@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateEthTransactionDto } from './dto/create-eth-transaction.dto';
-import { UpdateEthTransactionDto } from './dto/update-eth-transaction.dto';
+import { CreateEthTransactionDto } from './dtos/create-eth-transaction.dto';
+import { UpdateEthTransactionDto } from './dtos/update-eth-transaction.dto';
 import { EthTransaction } from './entities/eth-transaction.entity';
 import Web3 from 'web3';
-import { EthTransactionRepository } from './repos/transaction.repo';
+import { EthTransactionRepository } from './repositories/eth-transaction.repository';
 
 
 @Injectable()
