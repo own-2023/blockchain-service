@@ -20,6 +20,11 @@ export class EthTransactionsController {
     return { transaction };
   }
 
+  @Get('/getName')
+  getName(){
+    return 'Halil';
+  }
+
   @Post()
   async sendTransaction(@Body() createEthTransactionDto: CreateEthTransactionDto) {
     const { from, to, value } = createEthTransactionDto;
