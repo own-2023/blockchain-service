@@ -1,7 +1,7 @@
 
 # Merhaba
 
-Bu proje, blokzincir teknolojileri üzerinde geliştirme yapmak isteyenler için bir örnek proje niteliğindedir. Bu proje, Nestjs kullanılarak oluşturulan bir blokzincir servisidir ve Ethereum blokzincirine bağlanır. Aynı zamanda IPFS (InterPlanetary File System) teknolojisi de kullanılarak blokzincir servisi ile entegre çalışır.
+Bu proje, blokzincir teknolojileri üzerinde geliştirme yapmak isteyenler için bir örnek proje niteliğindedir. Bu proje, Nestjs kullanılarak oluşturulan bir blokzincir servisidir ve web3.js kütüphanesi kullanarak yerelde çalıştırdığımız Ganache Ethereum duğümünün (.ing node) blokzincirine bağlanır. Aynı zamanda IPFS (InterPlanetary File System) protokolünü de kullanılarak depolanmak istenen görseller burada dağınık şekilde herhangi bir ücret ödemeden depolanır ve blokzincir servisi ile entegre çalışır.
 
 
 # Başlangıç
@@ -11,7 +11,7 @@ Bu proje yerel bir makinede çalıştırılmak isteniyorsa, öncelikle aşağıd
 
 # Ön Gereksinimler
 
-    Node.js 14 veya daha yüksek sürümü
+    Node.js 18 veya daha yüksek sürümü
     Docker
     Ganache
     IPFS Desktop uygulaması
