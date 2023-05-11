@@ -10,9 +10,9 @@ dotenv.config();
   providers: [NftService, {
     provide: 'WEB3',
     useFactory: () => {
-      const ganacheUrl = 'http://127.0.0.1:7545'; // or whichever port your Ganache instance is running on
-      const web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
-      
+      //TODO:  abi ile kontrakt adresini json dosyasından alıyoruz ve parse ettikten sonra abi ve kontrakt adresini döndürüyoruz
+    
+      const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_HTTP_PROVIDER_URL));  
       return web3;
     },
   }]

@@ -14,8 +14,7 @@ dotenv.config();
   providers: [EthTransactionsService, {
     provide: 'WEB3',
     useFactory: () => {
-      const ganacheUrl = process.env.WEB3_HTTP_PROVIDER_URL// or whichever port your Ganache instance is running on
-      const web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
+      const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_HTTP_PROVIDER_URL));
       return web3;
     },
   }, EthTransactionRepository],
