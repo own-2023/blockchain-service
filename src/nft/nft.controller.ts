@@ -12,6 +12,12 @@ export class NftController {
     return this.nftService.create(createNftDto);
   }
 
+  @Get('getPrice/:tokenId')
+  async getPrice(@Param('tokenId') tokenId: number) {
+    const price = await this.nftService.getPrice(tokenId);
+    return  {price, tokenId};
+  }
+
   @Get()
   findAll() {
     return this.nftService.findAll();
