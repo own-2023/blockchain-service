@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { NftService } from './nft.service';
-import { CreateNftDto } from './dto/create-nft.dto';
+import { MintNftDto, SetPriceNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 
 @Controller('nft')
 export class NftController {
   constructor(private readonly nftService: NftService) {}
 
-  @Post()
-  create(@Body() createNftDto: CreateNftDto) {
-    return this.nftService.create(createNftDto);
+  @Post('mint')
+  mint(@Body() mintNftDto: MintNftDto) {
+    return this.nftService.mint(mintNftDto);
   }
 
   @Get('getPrice/:tokenId')
@@ -17,6 +17,19 @@ export class NftController {
     const price = await this.nftService.getPrice(tokenId);
     return  {price, tokenId};
   }
+
+  @Post('setPrice')
+  async setPrice(@Body() setPriceNftDto: SetPriceNftDto) {
+    await this.nftService.setPrice(setPriceNftDto.tokenId, setPriceNftDto.price);
+  }
+
+  @Post('buy/:tokenId')
+  async buy(@Param('tokenId') tokenId: number) {
+    const price = await this.nftService.getPrice(tokenId);
+    return  {price, tokenId};
+  }
+
+
 
   @Get()
   findAll() {

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateNftDto } from './dto/create-nft.dto';
+import { MintNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
 
@@ -13,7 +13,7 @@ export class NftService {
     let price = 0;
     try {
       // console.log(this.contract.methods);
-      price = await this.contract.methods.getPrice(1).call();
+      price = await this.contract.methods.getPrice(tokenId).call();
     }
     catch (e) {
     }
@@ -21,8 +21,39 @@ export class NftService {
     return price;
   }
 
-  create(createNftDto: CreateNftDto) {
-    return 'This action adds a new nft';
+  async setPrice(tokenId: number, newPrice: number) {
+    let price = 0;
+    try {
+      // console.log(this.contract.methods);
+      price = await this.contract.methods.setPrice(tokenId, newPrice).send();
+    }
+    catch (e) {
+    }
+    
+    return price;
+  }
+
+  async mint(mintNftDto: MintNftDto) {
+    let tokenId: number = -1
+    try {
+      tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send();
+    }
+    catch (e) {
+      console.log(e.message);
+    }
+    return tokenId;
+  }
+
+  async buy(tokenId: number) {
+    try {
+      // console.log(this.contract.methods);
+      return await this.contract.methods.buy(tokenId).send();
+    }
+    catch (e) {
+      console.log(e.message);
+    }
+    
+    return;
   }
 
   findAll() {

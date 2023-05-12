@@ -1,6 +1,6 @@
 import { IsEmpty, IsString } from "class-validator";
 
-export class MintNftDto{
+export class MintNftDto2{
 
     @IsEmpty()
     @IsString()

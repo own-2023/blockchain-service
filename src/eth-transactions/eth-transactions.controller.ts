@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Res } from
 import { EthTransactionsService } from './eth-transactions.service';
 import { CreateEthTransactionDto } from './dtos/create-eth-transaction.dto';
 import { UpdateEthTransactionDto } from './dtos/update-eth-transaction.dto';
-import { MintNftDto } from './dtos/mint-nft.dto';
+import { MintNftDto2 } from './dtos/mint-nft.dto';
 
 @Controller('eth-transactions')
 export class EthTransactionsController {
@@ -60,7 +60,7 @@ export class EthTransactionsController {
   }
 
   @Post('picture')
-  createPicture(@Body() body: MintNftDto){
+  createPicture(@Body() body: MintNftDto2){
 
     console.log(body.nftName);
     return 'Created';
