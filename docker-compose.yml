@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "127.0.0.1:7545:8545"
+ 
+      
+  ipfs-kubo:
+    image: ipfs/kubo
+    ports:
+      - "4001:4001"
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:5001:5001"
+    volumes:
+      - ipfs-data:/data/ipfs
+      
+  mysql:
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - '4306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  ipfs-data:
+  mysql-data:
