@@ -2,11 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MintNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
+import HDWalletProvider from '@truffle/hdwallet-provider';
+import Web3 from 'web3';
+
 
 @Injectable()
 export class NftService {
 
   constructor(@Inject('CONTRACT') private readonly contract: Contract,
+  @Inject('WEB3') private readonly web3: Web3
   ) {}
 
   async getPrice(tokenId: number) {
@@ -55,6 +59,68 @@ export class NftService {
     
     return;
   }
+
+  async createAccount(userId: string): Promise<any> {
+    const account = this.web3.eth.accounts.create();
+    return account;
+  }
+
+
+  // ALTTAKILER TEST EDILMEDI, alttakıler calısılacak, chat-gpt ile olusturuldu.
+  async generateWalletWeb3(userId: string): Promise<any> {
+    const account = this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
+    const wallet = this.web3.eth.accounts.wallet.add(account);
+    const keystore = wallet.encrypt(this.web3.utils.randomHex(32));
+
+    return {keystore, wallet, account}; 
+  }
+
+  async addAccountToWallet(walletMnemonic: string, accountIndex: number): Promise<string> {
+    const provider = new HDWalletProvider({
+      mnemonic: walletMnemonic,
+      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string,
+    });
+    const web3 = new Web3(provider);
+  
+    const accounts = await web3.eth.getAccounts();
+    const newAccount = accounts[accountIndex];
+  
+    // Unlock the wallet with the new account
+    await web3.eth.personal.unlockAccount(newAccount, null, null);
+  
+    return newAccount;
+  }
+
+  async getAccountFromWallet(walletMnemonic: string, accountIndex: number): Promise<string> {
+    const provider = new HDWalletProvider({
+      mnemonic: walletMnemonic,
+      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string // Replace with your Infura project ID
+    });
+    const web3 = new Web3(provider);
+  
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[accountIndex];
+  
+    return account;
+  }
+
+  async addWalletToAccount(account: string, walletMnemonic: string): Promise<boolean> {
+    const provider = new HDWalletProvider({
+      mnemonic: walletMnemonic,
+      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string, // Replace with your Infura project ID
+    });
+    const web3 = new Web3(provider);
+  
+    // Unlock the account with the wallet mnemonic
+    await web3.eth.personal.importRawKey(walletMnemonic, null);
+    await web3.eth.personal.unlockAccount(account, null, null);
+  
+    return true;
+  }
+  
+
+
+
 
   findAll() {
     return `This action returns all nft`;

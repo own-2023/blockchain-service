@@ -13,7 +13,6 @@ dotenv.config();
   providers: [NftService, {
     provide: 'CONTRACT',
     useFactory: () => {
-      //TODO:  abi ile kontrakt adresini json dosyasından alıyoruz ve parse ettikten sonra abi ve kontrakt adresini döndürüyoruz
       
       const configPath = path.resolve(__dirname, '..', '..', process.env.SMART_CONTRACT_PATH);
       const configFile = fs.readFileSync(configPath, 'utf-8');
@@ -27,7 +26,13 @@ dotenv.config();
       
       return contract;
     },
+  }, {
+    provide: 'WEB3',
+    useFactory: () => {
+      const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_HTTP_PROVIDER_URL));
+      return web3;
+    }
   }],
-  exports: ['CONTRACT']
+  exports: ['CONTRACT'],
 })
 export class NftModule {}

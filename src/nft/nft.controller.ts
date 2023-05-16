@@ -29,6 +29,35 @@ export class NftController {
     return  {price, tokenId};
   }
 
+  @Post('createAccount/:userId')
+  async createAccount(@Param('userId') userId: string) {
+    return await this.nftService.createAccount(userId);
+  }
+
+  @Post('generateWalletWeb3/:userId')
+  async generateWalletWeb3(@Param('userId') userId: string) {
+    return await this.nftService.generateWalletWeb3(userId);
+  }
+
+  @Post('addWalletToAccount')
+  async addWalletToAccount(@Param('userId') userId: string) {
+    return await this.nftService.generateWalletWeb3(userId);
+  }
+
+  @Post('getAccount')
+  async getAccount(@Param('userId') userId: string) {
+    return await this.nftService.generateWalletWeb3(userId);
+  }
+
+  @Post('testPost')
+  async testPost() {
+    
+  }
+
+  @Post('testGet')
+  async testGet() {
+    
+  }
 
 
   @Get()
