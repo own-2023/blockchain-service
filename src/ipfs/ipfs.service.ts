@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
+import { Blob } from "buffer";
+import { resourceUsage } from 'process';
 
 
 @Injectable()
@@ -32,6 +34,14 @@ export class IpfsService {
   async add(str: string) {
     const  cid = await this.ipfs.add(str);
     return cid;
+  }
+
+  async uploadFile(file: Express.Multer.File): Promise<string> {
+    const  result  = await this.ipfs.add(file.buffer);
+    console.log(result);
+    const cid = result.cid.toString();
+    return cid;
 
   }
+
 }

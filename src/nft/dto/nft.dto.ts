@@ -9,6 +9,10 @@ export class MintNftDto {
     @IsNotEmpty()
     imageUrl: string;
 
+    @IsString()
+    @IsNotEmpty()
+    from: string;
+
     @IsNumber()
     @IsPositive()
     price: number;

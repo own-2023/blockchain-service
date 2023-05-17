@@ -38,9 +38,12 @@ export class NftService {
   }
 
   async mint(mintNftDto: MintNftDto) {
-    let tokenId: number = -1
+    let tokenId: number = -1;
+   // const gasPrice = await this.web3.eth.getGasPrice();
+   // const gasLimit = 21000;
     try {
-      tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send();
+      tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send({from: mintNftDto.from, gas: 4712388});
+      console.log(tokenId);
     }
     catch (e) {
       console.log(e.message);
@@ -66,6 +69,37 @@ export class NftService {
   }
 
 
+  async checkSufficientFunds(buyerId: string, nftToken: string): Promise<any> {
+    // Implement the logic to check if the buyer has sufficient funds
+    // Example:
+    // Retrieve the buyer's balance and compare it with the NFT's price
+    // Return a Promise that resolves to a boolean indicating if the buyer has sufficient funds
+  }
+
+  async buyNft(buyerId: string, nftToken: string): Promise<any> {
+    // Implement the logic to perform the NFT purchase transaction
+    // Example:
+    // Transfer the NFT ownership to the buyer and deduct the payment from their account
+    // Return a Promise that resolves to a boolean indicating if the transaction was successful
+  }
+
+  async checkUserNft(tokenId: string, userId: string): Promise<any> {
+    // Implement the logic to check if the NFT belongs to the user
+    // Example:
+    // Retrieve the NFT's owner based on the tokenId and compare it with the userId
+    // Return a Promise that resolves to a boolean indicating if the NFT belongs to the user
+  }
+
+  async putNftOnSale(tokenId: string): Promise<any> {
+    // Implement the logic to put the NFT on sale
+    // Example:
+    // Update the NFT's status to indicate it's available for sale
+    // Return a Promise that resolves to a boolean indicating if the operation was successful
+  }
+
+
+
+  /*
   // ALTTAKILER TEST EDILMEDI, alttakıler calısılacak, chat-gpt ile olusturuldu.
   async generateWalletWeb3(userId: string): Promise<any> {
     const account = this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
@@ -118,7 +152,7 @@ export class NftService {
     return true;
   }
   
-
+  */
 
 
 

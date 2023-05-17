@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { NftService } from './nft.service';
 import { MintNftDto, SetPriceNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('nft')
 export class NftController {
   constructor(private readonly nftService: NftService) {}
 
   @Post('mint')
-  mint(@Body() mintNftDto: MintNftDto) {
-    return this.nftService.mint(mintNftDto);
+  async mint(@Body() mintNftDto: MintNftDto) {
+    return await this.nftService.mint(mintNftDto);
   }
 
   @Get('getPrice/:tokenId')
@@ -34,6 +36,49 @@ export class NftController {
     return await this.nftService.createAccount(userId);
   }
 
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  console.log(file);
+}
+
+
+// TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
+ // POST /nft/buy
+ @Post('buy')
+ async buyNft(buyerId: string, nftToken: string): Promise<boolean> {
+  // Check if the buyer has sufficient funds
+  const hasSufficientFunds = await this.nftService.checkSufficientFunds(buyerId, nftToken);
+
+  if (hasSufficientFunds) {
+    // Perform the transaction and return the result
+    const success = await this.nftService.buyNft(buyerId, nftToken);
+    return success;
+  } else {
+    // Return false if the buyer doesn't have sufficient funds
+    return false;
+  }
+}
+
+// POST /nft/put-on-sale
+@Post('putOnSale')
+async putNftOnSale(tokenId: string, userId: string): Promise<boolean> {
+  // Check if the token belongs to the user
+  const isUserNft = await this.nftService.checkUserNft(tokenId, userId);
+
+  if (isUserNft) {
+    // Put the NFT on sale and return the result
+    const success = await this.nftService.putNftOnSale(tokenId);
+    return success;
+  } else {
+    // Return false if the token doesn't belong to the user
+    return false;
+  }
+}
+
+
+  /*
   @Post('generateWalletWeb3/:userId')
   async generateWalletWeb3(@Param('userId') userId: string) {
     return await this.nftService.generateWalletWeb3(userId);
@@ -48,7 +93,7 @@ export class NftController {
   async getAccount(@Param('userId') userId: string) {
     return await this.nftService.generateWalletWeb3(userId);
   }
-
+*/
   @Post('testPost')
   async testPost() {
     

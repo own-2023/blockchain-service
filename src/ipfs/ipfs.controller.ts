@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { IpfsService } from './ipfs.service';
 import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+// http://localhost:8080/{cid}}
 
 @Controller('ipfs')
 export class IpfsController {
@@ -14,6 +17,14 @@ export class IpfsController {
     return cid;
 
   }
+
+  @Post('upload')
+@UseInterceptors(FileInterceptor('file'))
+async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  console.log(file);
+  const fileName = file.originalname;
+  return this.ipfsService.uploadFile(file);
+}
 
 
   @Post()
