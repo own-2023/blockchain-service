@@ -6,9 +6,12 @@ import * as dotenv from 'dotenv';
 import { AbiItem } from 'web3-utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserAccountEntity, UserEntity, UserNftEntity } from './entities/user.account.entity';
 dotenv.config();
 
 @Module({
+  imports: [TypeOrmModule.forFeature([UserAccountEntity, UserEntity, UserNftEntity])],
   controllers: [NftController],
   providers: [NftService, {
     provide: 'CONTRACT',

@@ -47,18 +47,11 @@ export class NftController {
 // TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
  // POST /nft/buy
  @Post('buy')
- async buyNft(buyerId: string, nftToken: string): Promise<boolean> {
+ async buyNft(buyerId: number, nftToken: number): Promise<any> {
   // Check if the buyer has sufficient funds
-  const hasSufficientFunds = await this.nftService.checkSufficientFunds(buyerId, nftToken);
+  this.nftService.buyNft(buyerId, nftToken);
 
-  if (hasSufficientFunds) {
-    // Perform the transaction and return the result
-    const success = await this.nftService.buyNft(buyerId, nftToken);
-    return success;
-  } else {
-    // Return false if the buyer doesn't have sufficient funds
-    return false;
-  }
+
 }
 
 // POST /nft/put-on-sale

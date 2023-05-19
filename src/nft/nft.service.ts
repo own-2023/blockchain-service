@@ -76,11 +76,10 @@ export class NftService {
     // Return a Promise that resolves to a boolean indicating if the buyer has sufficient funds
   }
 
-  async buyNft(buyerId: string, nftToken: string): Promise<any> {
-    // Implement the logic to perform the NFT purchase transaction
-    // Example:
-    // Transfer the NFT ownership to the buyer and deduct the payment from their account
-    // Return a Promise that resolves to a boolean indicating if the transaction was successful
+  async buyNft(buyerId: number, nftToken: number): Promise<any> {
+        const NftPrice = this.getPrice(nftToken);
+        // const userAccountEntity = await this.userAccountRepository.findOne({where: {userId: buyerId}});
+        this.contract.methods.buy(nftToken).send({from: buyerId, value: NftPrice});
   }
 
   async checkUserNft(tokenId: string, userId: string): Promise<any> {
