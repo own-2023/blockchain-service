@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipf.entity';
 import { Repository } from 'typeorm';
-import { UserAccountEntity, UserEntity, UserNftEntity } from '../entities/user.account.entity';
+import { UserAccountEntity } from '../entities/user-account.entity';
+import { UserEntity } from '../entities/user.entity';
+import { UserNftEntity } from '../entities/user-nft.entity';
 import { MintNftDto } from '../dto/nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 
@@ -11,20 +13,20 @@ import { IPFSHTTPClient } from 'ipfs-http-client';
 export class NftRepository {
 
   constructor(
-  @InjectRepository(UserEntity) private userEntity : Repository<UserEntity>,
-  @InjectRepository(UserAccountEntity) private userAccountEntity : Repository<UserAccountEntity>,
-  @InjectRepository(UserNftEntity) private userNftEntity : Repository<UserNftEntity>,
-  @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) {}
+    @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
+    @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
+    @InjectRepository(UserNftEntity) private userNftEntity: Repository<UserNftEntity>,
+    @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
 
-   async uploadNft(user_id: number, file: Express.Multer.File) {
+  async uploadNft(user_id: number, file: Express.Multer.File) {
     return 'This action adds a new ethTransaction';
   }
 
   async getAccountBalance(user_id: number) {
     const userAccount = await this.userAccountEntity.findOneBy({
-        user_id: user_id
+      user_id: user_id
     });
     return userAccount.balance;
 
@@ -32,59 +34,58 @@ export class NftRepository {
 
   async getAccount(user_id: number) {
     const userAccount = await this.userAccountEntity.findOneBy({
-        user_id: user_id
+      user_id: user_id
     });
     return userAccount;
-}
+  }
 
-async getAllOwnedTokens(user_id: number) {
+  async getAllOwnedTokens(user_id: number) {
     const userNfts = await this.userNftEntity.findOneBy({
-        user_id: user_id
+      user_id: user_id
     });
     return userNfts;
-}
+  }
 
-async getOwnedNftByTokenId(token_id: number) {
+  async getOwnedNftByTokenId(token_id: number) {
     const userNfts = await this.userNftEntity.findOneBy({
-        token_id: token_id
+      token_id: token_id
     });
     return userNfts;
-}
+  }
 
-async getAccountAddress(user_id: number) {
+  async getAccountAddress(user_id: number) {
     const userAccount = await this.userAccountEntity.findOneBy({
-        user_id: user_id
+      user_id: user_id
     });
     return userAccount.public_key;
 
-}
+  }
 
-async getNftCid(user_id: number, token_id: number) {
+  async getNftCid(user_id: number, token_id: number) {
     const userAccount = await this.userAccountEntity.findOneBy({
-        user_id: user_id
+      user_id: user_id
     });
     return userAccount.public_key;
 
-}
+  }
 
 
-  async mintNft(mintNftDto: MintNftDto, token_id: number) {
-    const  mintedNft = new UserNftEntity();
+  async insertNft(mintNftDto: MintNftDto, token_id: number) {
+    const mintedNft = new UserNftEntity();
     mintedNft.name = mintNftDto.name;
     mintedNft.user_id = mintNftDto.userId;
     mintedNft.token_id = token_id;
     mintedNft.price = mintNftDto.price;
     mintedNft.created_at = new Date();
     mintedNft.updated_at = new Date();
-
-    await this.userNftEntity.save(mintedNft);
-    return mintedNft;
+    console.log(mintedNft);
+    await this.userNftEntity.save([mintedNft]);
   }
 
   async buyNft(user_id: number, tokenId: number) {
     const usernft = await this.userNftEntity.findOneBy({
-            user_id: user_id,
-            token_id: tokenId
+      user_id: user_id,
+      token_id: tokenId
     });
 
     usernft.price = 0;
@@ -93,7 +94,7 @@ async getNftCid(user_id: number, token_id: number) {
 
   }
 
-  async putOnSaleNft(tokenId: number,userId: number, price: number) {
+  async putOnSaleNft(tokenId: number, userId: number, price: number) {
     return 'This action adds a new ethTransaction';
   }
 
@@ -108,8 +109,8 @@ async getNftCid(user_id: number, token_id: number) {
   async getOnSaleNft() {
     return 'This action adds a new ethTransaction';
   }
-  
 
-  
+
+
 
 }

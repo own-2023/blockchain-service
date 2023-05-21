@@ -46,7 +46,7 @@ export class NftService {
     try {
       tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send({from: mintNftDto.from, gas: 4712388});
       console.log(tokenId);
-      this.nftRepository.mintNft(mintNftDto, tokenId);
+      this.nftRepository.insertNft(mintNftDto, tokenId);
     }
     catch (e) {
       console.log(e.message);
@@ -70,8 +70,6 @@ export class NftService {
     const account = this.web3.eth.accounts.create();
     return account;
   }
-
-
 
   async buyNft(buyerId: number, tokenId: number): Promise<any> {
         const NftPrice = this.getPrice(tokenId);
@@ -142,8 +140,8 @@ export class NftService {
 
 
 
-  findAll() {
-    return `This action returns all nft`;
+  async getAllNfts() {
+    return await this.contract.methods.getAllImageMetadatas().call();
   }
 
   findOne(id: number) {
