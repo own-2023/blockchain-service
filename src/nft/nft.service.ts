@@ -4,13 +4,15 @@ import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
 import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
+import { NftRepository } from './repo/nft.repository';
 
 
 @Injectable()
 export class NftService {
 
   constructor(@Inject('CONTRACT') private readonly contract: Contract,
-  @Inject('WEB3') private readonly web3: Web3
+  @Inject('WEB3') private readonly web3: Web3,
+  private readonly nftRepository: NftRepository,
   ) {}
 
   async getPrice(tokenId: number) {
@@ -44,6 +46,7 @@ export class NftService {
     try {
       tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send({from: mintNftDto.from, gas: 4712388});
       console.log(tokenId);
+      this.nftRepository.mintNft(mintNftDto, tokenId);
     }
     catch (e) {
       console.log(e.message);
@@ -69,31 +72,15 @@ export class NftService {
   }
 
 
-  async checkSufficientFunds(buyerId: string, nftToken: string): Promise<any> {
-    // Implement the logic to check if the buyer has sufficient funds
-    // Example:
-    // Retrieve the buyer's balance and compare it with the NFT's price
-    // Return a Promise that resolves to a boolean indicating if the buyer has sufficient funds
+
+  async buyNft(buyerId: number, tokenId: number): Promise<any> {
+        const NftPrice = this.getPrice(tokenId);
+        this.contract.methods.buy(tokenId).send({from: buyerId, value: NftPrice});
   }
 
-  async buyNft(buyerId: number, nftToken: number): Promise<any> {
-        const NftPrice = this.getPrice(nftToken);
-        // const userAccountEntity = await this.userAccountRepository.findOne({where: {userId: buyerId}});
-        this.contract.methods.buy(nftToken).send({from: buyerId, value: NftPrice});
-  }
-
-  async checkUserNft(tokenId: string, userId: string): Promise<any> {
-    // Implement the logic to check if the NFT belongs to the user
-    // Example:
-    // Retrieve the NFT's owner based on the tokenId and compare it with the userId
-    // Return a Promise that resolves to a boolean indicating if the NFT belongs to the user
-  }
-
-  async putNftOnSale(tokenId: string): Promise<any> {
-    // Implement the logic to put the NFT on sale
-    // Example:
-    // Update the NFT's status to indicate it's available for sale
-    // Return a Promise that resolves to a boolean indicating if the operation was successful
+  async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {
+    await this.setPrice(tokenId, price);
+    await this.nftRepository.putOnSaleNft(tokenId, user_id, price);
   }
 
 

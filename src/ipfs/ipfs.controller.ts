@@ -21,7 +21,7 @@ export class IpfsController {
   @Post('upload')
 @UseInterceptors(FileInterceptor('file'))
 async uploadFile(@UploadedFile() file: Express.Multer.File) {
-  console.log(file);
+  //console.log(file);
   const fileName = file.originalname;
   return this.ipfsService.uploadFile(file);
 }

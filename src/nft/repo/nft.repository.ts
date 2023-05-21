@@ -3,70 +3,113 @@ import {InjectRepository} from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipf.entity';
 import { Repository } from 'typeorm';
 import { UserAccountEntity, UserEntity, UserNftEntity } from '../entities/user.account.entity';
+import { MintNftDto } from '../dto/nft.dto';
+import { IPFSHTTPClient } from 'ipfs-http-client';
 
 
 @Injectable()
 export class NftRepository {
 
   constructor(
-  @InjectRepository(IpfsEntity) private ipfsRepository : Repository<IpfsEntity>,
   @InjectRepository(UserEntity) private userEntity : Repository<UserEntity>,
   @InjectRepository(UserAccountEntity) private userAccountEntity : Repository<UserAccountEntity>,
-  @InjectRepository(UserNftEntity) private userNftEntity : Repository<UserNftEntity>) {}
+  @InjectRepository(UserNftEntity) private userNftEntity : Repository<UserNftEntity>,
+  @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) {}
 
 
 
-  uploadNft() {
+   async uploadNft(user_id: number, file: Express.Multer.File) {
     return 'This action adds a new ethTransaction';
   }
 
+  async getAccountBalance(user_id: number) {
+    const userAccount = await this.userAccountEntity.findOneBy({
+        user_id: user_id
+    });
+    return userAccount.balance;
 
-  mintNft() {
+  }
+
+  async getAccount(user_id: number) {
+    const userAccount = await this.userAccountEntity.findOneBy({
+        user_id: user_id
+    });
+    return userAccount;
+}
+
+async getAllOwnedTokens(user_id: number) {
+    const userNfts = await this.userNftEntity.findOneBy({
+        user_id: user_id
+    });
+    return userNfts;
+}
+
+async getOwnedNftByTokenId(token_id: number) {
+    const userNfts = await this.userNftEntity.findOneBy({
+        token_id: token_id
+    });
+    return userNfts;
+}
+
+async getAccountAddress(user_id: number) {
+    const userAccount = await this.userAccountEntity.findOneBy({
+        user_id: user_id
+    });
+    return userAccount.public_key;
+
+}
+
+async getNftCid(user_id: number, token_id: number) {
+    const userAccount = await this.userAccountEntity.findOneBy({
+        user_id: user_id
+    });
+    return userAccount.public_key;
+
+}
+
+
+  async mintNft(mintNftDto: MintNftDto, token_id: number) {
+    const  mintedNft = new UserNftEntity();
+    mintedNft.name = mintNftDto.name;
+    mintedNft.user_id = mintNftDto.userId;
+    mintedNft.token_id = token_id;
+    mintedNft.price = mintNftDto.price;
+    mintedNft.created_at = new Date();
+    mintedNft.updated_at = new Date();
+
+    await this.userNftEntity.save(mintedNft);
+    return mintedNft;
+  }
+
+  async buyNft(user_id: number, tokenId: number) {
+    const usernft = await this.userNftEntity.findOneBy({
+            user_id: user_id,
+            token_id: tokenId
+    });
+
+    usernft.price = 0;
+    const result = await this.userNftEntity.save(usernft);
+    return result;
+
+  }
+
+  async putOnSaleNft(tokenId: number,userId: number, price: number) {
     return 'This action adds a new ethTransaction';
   }
 
-  buyNft() {
+  async getUserOwnedNfts(user_id: number) {
     return 'This action adds a new ethTransaction';
   }
 
-  putOnSaleNft() {
+  async getAllNft() {
     return 'This action adds a new ethTransaction';
   }
 
-  getNft(user_id: number) {
-    return 'This action adds a new ethTransaction';
-  }
-
-  getAllNft() {
+  async getOnSaleNft() {
     return 'This action adds a new ethTransaction';
   }
   
-  create() {
-    return 'This action adds a new ethTransaction';
-  }
 
-  save(){
-  }
-
-  async findAll() {
-
-    return `This action returns all ethTransactions`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} ethTransaction`;
-  }
-
-  update(id: number,) {
-    return `This action updates a #${id} ethTransaction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} ethTransaction`;
-  }
-
-  add(){
-
-  }
+  
 
 }

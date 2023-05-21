@@ -38,7 +38,7 @@ export class IpfsService {
 
   async uploadFile(file: Express.Multer.File): Promise<string> {
     const  result  = await this.ipfs.add(file.buffer);
-    console.log(result);
+    //console.log(result);
     const cid = result.cid.toString();
     return cid;
 

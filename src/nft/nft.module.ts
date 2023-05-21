@@ -8,6 +8,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAccountEntity, UserEntity, UserNftEntity } from './entities/user.account.entity';
+import { NftRepository } from './repo/nft.repository';
+import { create } from 'ipfs-http-client'
+
 dotenv.config();
 
 @Module({
@@ -35,7 +38,14 @@ dotenv.config();
       const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_HTTP_PROVIDER_URL));
       return web3;
     }
-  }],
+  },{
+    provide: 'IPFS',
+    useFactory: () => {
+      const ipfs = create({ host: process.env.IPFS_HOST, port: process.env.IPFS_PORT as unknown as number, protocol: process.env.IPFS_PROTOCOL });
+      return ipfs;
+    },
+  }
+  , NftRepository] ,
   exports: ['CONTRACT'],
 })
 export class NftModule {}

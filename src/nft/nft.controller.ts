@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { NftService } from './nft.service';
-import { MintNftDto, SetPriceNftDto } from './dto/nft.dto';
+import { MintNftDto, SetPriceNftDto, UploadNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -37,10 +37,19 @@ export class NftController {
   }
 
 
-  @Post('upload')
+  @Post('upload/:userId')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-  console.log(file);
+  const fileString = file.buffer.toString();
+  const buffer = Buffer.from(fileString);
+  return file.buffer;
+
+}
+
+@Post('upload2/:userId')
+async upload2(@Body() uploadNftDto: UploadNftDto) {
+
+
 }
 
 
@@ -56,18 +65,11 @@ export class NftController {
 
 // POST /nft/put-on-sale
 @Post('putOnSale')
-async putNftOnSale(tokenId: string, userId: string): Promise<boolean> {
+async putNftOnSale(tokenId: number, userId: number, price: number): Promise<boolean> {
   // Check if the token belongs to the user
-  const isUserNft = await this.nftService.checkUserNft(tokenId, userId);
 
-  if (isUserNft) {
-    // Put the NFT on sale and return the result
-    const success = await this.nftService.putNftOnSale(tokenId);
+    const success = await this.nftService.putNftOnSale(tokenId, userId, price);
     return success;
-  } else {
-    // Return false if the token doesn't belong to the user
-    return false;
-  }
 }
 
 

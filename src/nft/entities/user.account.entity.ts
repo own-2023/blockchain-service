@@ -19,6 +19,9 @@ export class UserAccountEntity {
     private_key: string;
 
     @Column()
+    balance: number;
+
+    @Column()
     created_at: Date;
 
     @Column()
@@ -41,7 +44,10 @@ export class UserNftEntity {
     token_id: number;
 
     @Column()
-    contract_address: string;
+    name: string;
+
+    @Column()
+    price: number;
 
     @Column()
     created_at: Date;
