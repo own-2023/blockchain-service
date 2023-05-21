@@ -11,19 +11,18 @@ import { NftRepository } from './repo/nft.repository';
 export class NftService {
 
   constructor(@Inject('CONTRACT') private readonly contract: Contract,
-  @Inject('WEB3') private readonly web3: Web3,
-  private readonly nftRepository: NftRepository,
-  ) {}
+    @Inject('WEB3') private readonly web3: Web3,
+    private readonly nftRepository: NftRepository,
+  ) { }
 
   async getPrice(tokenId: number) {
     let price = 0;
     try {
-      // console.log(this.contract.methods);
       price = await this.contract.methods.getPrice(tokenId).call();
     }
     catch (e) {
     }
-    
+
     return price;
   }
 
@@ -35,23 +34,21 @@ export class NftService {
     }
     catch (e) {
     }
-    
     return price;
   }
 
   async mint(mintNftDto: MintNftDto) {
-    let tokenId: number = -1;
-   // const gasPrice = await this.web3.eth.getGasPrice();
-   // const gasLimit = 21000;
+    let transactionHash: any = -1;
+    // const gasPrice = await this.web3.eth.getGasPrice();
+    // const gasLimit = 21000;
     try {
-      tokenId = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name ,mintNftDto.price).send({from: mintNftDto.from, gas: 4712388});
-      console.log(tokenId);
-      this.nftRepository.insertNft(mintNftDto, tokenId);
+      transactionHash = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name, mintNftDto.price).send({ from: mintNftDto.from, gas: 4712388 });
+      this.nftRepository.insertNft(mintNftDto, transactionHash['events']['Transfer']['returnValues']);
     }
     catch (e) {
       console.log(e.message);
     }
-    return tokenId;
+    return transactionHash;
   }
 
   async buy(tokenId: number) {
@@ -62,7 +59,7 @@ export class NftService {
     catch (e) {
       console.log(e.message);
     }
-    
+
     return;
   }
 
@@ -72,8 +69,8 @@ export class NftService {
   }
 
   async buyNft(buyerId: number, tokenId: number): Promise<any> {
-        const NftPrice = this.getPrice(tokenId);
-        this.contract.methods.buy(tokenId).send({from: buyerId, value: NftPrice});
+    const NftPrice = this.getPrice(tokenId);
+    this.contract.methods.buy(tokenId).send({ from: buyerId, value: NftPrice });
   }
 
   async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {

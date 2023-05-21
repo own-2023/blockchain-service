@@ -7,6 +7,7 @@ import { UserEntity } from '../entities/user.entity';
 import { UserNftEntity } from '../entities/user-nft.entity';
 import { MintNftDto } from '../dto/nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
+import { Result } from 'ethers';
 
 
 @Injectable()
@@ -70,11 +71,11 @@ export class NftRepository {
   }
 
 
-  async insertNft(mintNftDto: MintNftDto, token_id: number) {
+  async insertNft(mintNftDto: MintNftDto, result: Result) {
     const mintedNft = new UserNftEntity();
     mintedNft.name = mintNftDto.name;
     mintedNft.user_id = mintNftDto.userId;
-    mintedNft.token_id = token_id;
+    mintedNft.token_id = result.tokenId;
     mintedNft.price = mintNftDto.price;
     mintedNft.created_at = new Date();
     mintedNft.updated_at = new Date();
