@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards } from '@nestjs/common';
 import { NftService } from './nft.service';
-import { MintNftDto, SetPriceNftDto, UploadNftDto } from './dto/nft.dto';
+import { MintNftDto} from './dto/mint-nft.dto';
+import { SetPriceNftDto } from './dto/set-price-nft.dto';
+import { UploadNftDto } from './dto/upload-nft-dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -60,7 +62,7 @@ export class NftController {
   @Post('lazyMint')
   @UseGuards(AuthGuard)
   async lazyMint(){
-    
+
   }
 
 

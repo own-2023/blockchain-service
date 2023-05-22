@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MintNftDto } from './dto/nft.dto';
+import { MintNftDto } from './dto/mint-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
 import { IpfsService } from 'src/ipfs/ipfs.service';
@@ -37,7 +37,7 @@ export class NftService {
     return price;
   }
 
-  
+
 
   async mint(mintNftDto: MintNftDto) {
     let transactionHash: any = -1;
