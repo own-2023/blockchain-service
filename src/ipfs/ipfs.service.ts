@@ -2,14 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
-import { Blob } from "buffer";
-import { resourceUsage } from 'process';
+import { IpfsRepository } from './repo/ipfs.repository';
 
 
 @Injectable()
 export class IpfsService {
 
-  constructor(@Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
+  constructor(@Inject('IPFS') private readonly ipfs: IPFSHTTPClient,
+    private readonly ipfsRepository: IpfsRepository) { }
 
   create(createIpfDto: CreateIpfDto) {
     return 'This action adds a new ipf';
@@ -31,14 +31,10 @@ export class IpfsService {
     return `This action removes a #${id} ipf`;
   }
 
-  async add(str: string) {
-    const cid = await this.ipfs.add(str);
-    return cid;
-  }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: Express.Multer.File) {
     const result = await this.ipfs.add(file.buffer);
     const cid = result.cid.toString();
-    return cid;
+    
   }
 }

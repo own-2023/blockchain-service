@@ -1,13 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 
-@Entity({ 
+@Entity({
     name: 'ipfs',
     database: 'db',
 })
 export class IpfsEntity {
     @PrimaryGeneratedColumn()
-    ipfs_id: number;
+    id: number;
 
     @Column()
     user_id: string;
@@ -21,4 +21,4 @@ export class IpfsEntity {
     @Column()
     created_at: Date;
 
- }
+}

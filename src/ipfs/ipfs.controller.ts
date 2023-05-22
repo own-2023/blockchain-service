@@ -10,14 +10,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) {}
 
-  @Post('addString/:str')
-  async add(@Param('str') str: string) {
-    const  cid  = await this.ipfsService.add(str);
-    console.log(cid);
-    return cid;
-
-  }
-
   @Post('upload')
 @UseInterceptors(FileInterceptor('file'))
 async uploadFile(@UploadedFile() file: Express.Multer.File) {

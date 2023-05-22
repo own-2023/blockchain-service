@@ -4,7 +4,7 @@ import { IpfsController } from './ipfs.controller';
 import { create } from 'ipfs-http-client'
 import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { IpfsEntity } from './entities/ipf.entity';
+import { IpfsEntity } from './entities/ipfs.entity';
 import { IpfsRepository } from './repo/ipfs.repository';
 dotenv.config();
 

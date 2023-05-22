@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
-import { IpfsEntity } from 'src/ipfs/entities/ipf.entity';
+import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
 import { UserAccountEntity } from '../entities/user-account.entity';
 import { UserEntity } from '../entities/user.entity';
@@ -74,15 +74,14 @@ export class NftRepository {
 
 
   async insertNft(mintNftDto: MintNftDto, result: Result) {
-    const mintedNft = new UserNftEntity();
-    mintedNft.name = mintNftDto.name;
-    mintedNft.user_id = mintNftDto.userId;
-    mintedNft.token_id = result.tokenId;
-    mintedNft.price = mintNftDto.price;
-    mintedNft.created_at = new Date();
-    mintedNft.updated_at = new Date();
-    console.log(mintedNft);
-    await this.userNftEntity.save([mintedNft]);
+    await this.userNftEntity.save({
+      name: mintNftDto.name,
+      token_id: result.tokenId,
+      price: mintNftDto.price,
+      created_at: new Date(),
+      updated_at: new Date(),
+      user_id: mintNftDto.userId
+    });
   }
 
   async buyNft(user_id: number, tokenId: number) {

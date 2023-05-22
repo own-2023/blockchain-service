@@ -42,7 +42,6 @@ export class NftController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(207)
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-   
 
   }
 
