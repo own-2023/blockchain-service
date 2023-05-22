@@ -20,5 +20,4 @@ export class IpfsController {
     const user_id: string = request['user'].user_id;
     this.ipfsService.uploadFile(file, user_id);
   }
-
 }

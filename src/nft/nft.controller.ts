@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards } from '@nestjs/common';
 import { NftService } from './nft.service';
 import { MintNftDto, SetPriceNftDto, UploadNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('nfts')
 export class NftController {
@@ -47,13 +48,19 @@ export class NftController {
     this.nftService.buyNft(buyerId, nftToken);
   }
 
-  // POST /nft/put-on-sale
+  // POST /nfts/put-on-sale
   @Post('putOnSale')
   async putNftOnSale(tokenId: number, userId: number, price: number): Promise<boolean> {
     // Check if the token belongs to the user
 
     const success = await this.nftService.putNftOnSale(tokenId, userId, price);
     return success;
+  }
+
+  @Post('lazyMint')
+  @UseGuards(AuthGuard)
+  async lazyMint(){
+    
   }
 
 

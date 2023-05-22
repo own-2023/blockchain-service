@@ -37,6 +37,8 @@ export class NftService {
     return price;
   }
 
+  
+
   async mint(mintNftDto: MintNftDto) {
     let transactionHash: any = -1;
     // const gasPrice = await this.web3.eth.getGasPrice();
