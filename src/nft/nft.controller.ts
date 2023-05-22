@@ -50,12 +50,6 @@ export class NftController {
     return await this.nftService.getAllNfts();
   }
 
-  @Post('upload2/:userId')
-  async upload2(@Body() uploadNftDto: UploadNftDto) {
-
-
-  }
-
 
   // TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
   // POST /nft/buy

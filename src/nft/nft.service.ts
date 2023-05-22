@@ -53,12 +53,6 @@ export class NftService {
   }
 
 
-  async uploadFileToIpfs(file: Express.Multer.File){
-    const fileString = file.buffer.toString();
-    const cid = await this.ipfsService.uploadFile(file);
-    
-  }
-
   async buy(tokenId: number) {
     try {
       // console.log(this.contract.methods);

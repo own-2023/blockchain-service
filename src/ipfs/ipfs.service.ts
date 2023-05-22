@@ -32,9 +32,10 @@ export class IpfsService {
   }
 
 
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File, user_id: string) {
     const result = await this.ipfs.add(file.buffer);
+    const filename = file.originalname;
     const cid = result.cid.toString();
-    
+    this.ipfsRepository.save(user_id, cid, filename);
   }
 }
