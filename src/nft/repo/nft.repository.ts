@@ -71,6 +71,8 @@ export class NftRepository {
   }
 
 
+
+
   async insertNft(mintNftDto: MintNftDto, result: Result) {
     const mintedNft = new UserNftEntity();
     mintedNft.name = mintNftDto.name;
@@ -94,24 +96,5 @@ export class NftRepository {
     return result;
 
   }
-
-  async putOnSaleNft(tokenId: number, userId: number, price: number) {
-    return 'This action adds a new ethTransaction';
-  }
-
-  async getUserOwnedNfts(user_id: number) {
-    return 'This action adds a new ethTransaction';
-  }
-
-  async getAllNft() {
-    return 'This action adds a new ethTransaction';
-  }
-
-  async getOnSaleNft() {
-    return 'This action adds a new ethTransaction';
-  }
-
-
-
 
 }

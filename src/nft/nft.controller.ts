@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
 import { NftService } from './nft.service';
 import { MintNftDto, SetPriceNftDto, UploadNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { IpfsService } from 'src/ipfs/ipfs.service';
 
 @Controller('nft')
 export class NftController {
@@ -39,10 +40,10 @@ export class NftController {
 
   @Post('upload/:userId')
   @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(207)
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const fileString = file.buffer.toString();
-    const buffer = Buffer.from(fileString);
-    return file.buffer;
+   
+
   }
 
   @Get('getAllNfts')

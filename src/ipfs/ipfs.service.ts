@@ -9,7 +9,7 @@ import { resourceUsage } from 'process';
 @Injectable()
 export class IpfsService {
 
-  constructor(@Inject('IPFS') private readonly ipfs: IPFSHTTPClient){}
+  constructor(@Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
   create(createIpfDto: CreateIpfDto) {
     return 'This action adds a new ipf';
@@ -32,16 +32,13 @@ export class IpfsService {
   }
 
   async add(str: string) {
-    const  cid = await this.ipfs.add(str);
+    const cid = await this.ipfs.add(str);
     return cid;
   }
 
   async uploadFile(file: Express.Multer.File): Promise<string> {
-    const  result  = await this.ipfs.add(file.buffer);
-    //console.log(result);
+    const result = await this.ipfs.add(file.buffer);
     const cid = result.cid.toString();
     return cid;
-
   }
-
 }

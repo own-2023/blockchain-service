@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MintNftDto } from './dto/nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
-import HDWalletProvider from '@truffle/hdwallet-provider';
+import { IpfsService } from 'src/ipfs/ipfs.service';
 import Web3 from 'web3';
 import { NftRepository } from './repo/nft.repository';
 
@@ -13,6 +13,7 @@ export class NftService {
   constructor(@Inject('CONTRACT') private readonly contract: Contract,
     @Inject('WEB3') private readonly web3: Web3,
     private readonly nftRepository: NftRepository,
+    private readonly ipfsService: IpfsService,
   ) { }
 
   async getPrice(tokenId: number) {
@@ -51,6 +52,13 @@ export class NftService {
     return transactionHash;
   }
 
+
+  async uploadFileToIpfs(file: Express.Multer.File){
+    const fileString = file.buffer.toString();
+    const cid = await this.ipfsService.uploadFile(file);
+
+  }
+
   async buy(tokenId: number) {
     try {
       // console.log(this.contract.methods);
@@ -75,7 +83,6 @@ export class NftService {
 
   async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {
     await this.setPrice(tokenId, price);
-    await this.nftRepository.putOnSaleNft(tokenId, user_id, price);
   }
 
 
