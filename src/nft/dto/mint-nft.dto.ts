@@ -10,7 +10,7 @@ export class MintNftDto {
     @IsString()
     @IsNotEmpty()
     name: string;
-  
+
     @IsString()
     @IsNotEmpty()
     imageUrl: string;
@@ -29,7 +29,7 @@ export class MintNftDto {
 
 
     createdAt: Date;
-    updatedAt: Date;  
+    updatedAt: Date;
 }
 
 

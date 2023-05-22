@@ -20,7 +20,7 @@ dotenv.config();
       const ipfs = create({ host: process.env.IPFS_HOST, port: process.env.IPFS_PORT as unknown as number, protocol: process.env.IPFS_PROTOCOL });
       return ipfs;
     },
-  },IpfsRepository],
+  }, IpfsRepository],
   exports: [IpfsService],
 })
-export class IpfsModule {}
+export class IpfsModule { }

@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 
-export class LazyMintNftDto{
+export class LazyMintNftDto {
 
     @IsNumber()
     @IsNotEmpty()
@@ -13,8 +13,4 @@ export class LazyMintNftDto{
     @IsString()
     @IsNotEmpty()
     name: string;
-
-    
-    
-
 }
