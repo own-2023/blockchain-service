@@ -63,8 +63,8 @@ export class NftController {
   @Post('lazyMint')
   @UseGuards(AuthGuard)
   @HttpCode(204)
-  async lazyMint(@Body() LazyMintNftDto: LazyMintNftDto) {
-
+  async lazyMintNft(@Body() LazyMintNftDto: LazyMintNftDto) {
+    await this.nftService.lazyMintNft(LazyMintNftDto);
   }
 
   /*

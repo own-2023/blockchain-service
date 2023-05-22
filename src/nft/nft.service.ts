@@ -5,6 +5,7 @@ import { Contract } from 'web3-eth-contract';
 import { IpfsService } from 'src/ipfs/ipfs.service';
 import Web3 from 'web3';
 import { NftRepository } from './repo/nft.repository';
+import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 
 
 @Injectable()
@@ -65,8 +66,8 @@ export class NftService {
     return;
   }
 
-  async lazyMint(){
-    
+  async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
+    await this.nftRepository.lazyMintNft(lazyMintNftDto);
   }
 
   async createAccount(userId: string): Promise<any> {
@@ -82,7 +83,7 @@ export class NftService {
   async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {
     await this.setPrice(tokenId, price);
   }
-  
+
   /*
   // ALTTAKILER TEST EDILMEDI, alttakıler calısılacak, chat-gpt ile olusturuldu.
   async generateWalletWeb3(userId: string): Promise<any> {
