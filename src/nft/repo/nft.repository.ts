@@ -5,9 +5,11 @@ import { Repository } from 'typeorm';
 import { UserAccountEntity } from '../entities/user-account.entity';
 import { UserEntity } from '../entities/user.entity';
 import { UserNftEntity } from '../entities/user-nft.entity';
-import { MintNftDto } from '../dto/nft.dto';
+import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
+import { LazyMintNftDto } from '../dto/lazy-mint-nft.dto';
+import { UserLazyNftEntity } from '../entities/user-lazy-nft';
 
 
 @Injectable()
@@ -17,6 +19,7 @@ export class NftRepository {
     @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
     @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
     @InjectRepository(UserNftEntity) private userNftEntity: Repository<UserNftEntity>,
+    @InjectRepository(UserLazyNftEntity) private userLazyNftEntity: Repository<UserLazyNftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
@@ -68,6 +71,10 @@ export class NftRepository {
     });
     return userAccount.public_key;
 
+  }
+
+  async lazyMint(lazyMintNftDto: LazyMintNftDto) {
+    this.userLazyNftEntity.save({ cid: lazyMintNftDto.cid, name: lazyMintNftDto.name, user_id: lazyMintNftDto.user_id })
   }
 
 

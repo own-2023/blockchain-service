@@ -5,6 +5,7 @@ import { SetPriceNftDto } from './dto/set-price-nft.dto';
 import { UploadNftDto } from './dto/upload-nft-dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 
 @Controller('nfts')
 export class NftController {
@@ -62,7 +63,7 @@ export class NftController {
   @Post('lazyMint')
   @UseGuards(AuthGuard)
   @HttpCode(204)
-  async lazyMint() {
+  async lazyMint(@Body() LazyMintNftDto: LazyMintNftDto) {
 
   }
 

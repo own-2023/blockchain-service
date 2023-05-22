@@ -65,6 +65,10 @@ export class NftService {
     return;
   }
 
+  async lazyMint(){
+    
+  }
+
   async createAccount(userId: string): Promise<any> {
     const account = this.web3.eth.accounts.create();
     return account;
