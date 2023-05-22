@@ -11,11 +11,13 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) { }
 
-  @Post('upload/:userId')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(207)
   @UseGuards(AuthGuard)
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Param('userId') user_id: string, @Req() request: Request) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() request: Request) {
+    console.log(request);
+    const user_id: string = request['user'].user_id;
     this.ipfsService.uploadFile(file, user_id);
   }
 

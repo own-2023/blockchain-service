@@ -6,11 +6,13 @@ import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IpfsEntity } from './entities/ipfs.entity';
 import { IpfsRepository } from './repo/ipfs.repository';
+import { AuthModule } from 'src/auth/auth.module';
+import { jwtConstants } from 'src/constants';
 dotenv.config();
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([IpfsEntity])],
+  imports: [TypeOrmModule.forFeature([IpfsEntity]), AuthModule],
   controllers: [IpfsController],
   providers: [IpfsService, {
     provide: 'IPFS',
@@ -18,6 +20,7 @@ dotenv.config();
       const ipfs = create({ host: process.env.IPFS_HOST, port: process.env.IPFS_PORT as unknown as number, protocol: process.env.IPFS_PROTOCOL });
       return ipfs;
     },
-  },IpfsRepository], 
+  },IpfsRepository],
+  exports: [IpfsService],
 })
 export class IpfsModule {}
