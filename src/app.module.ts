@@ -6,6 +6,7 @@ import { IpfsModule } from './ipfs/ipfs.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EthTransaction } from './eth-transactions/entities/eth-transaction.entity';
 import { NftModule } from './nft/nft.module';
+import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -20,7 +21,7 @@ dotenv.config();
     entities: [EthTransaction],
     autoLoadEntities: true,
     synchronize: true,
-  }), NftModule],
+  }), NftModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService, 

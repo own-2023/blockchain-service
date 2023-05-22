@@ -17,32 +17,4 @@ export class IpfsController {
     this.ipfsService.uploadFile(file, user_id);
   }
 
-
-  @Post()
-  create(@Body() createIpfDto: CreateIpfDto) {
-    return this.ipfsService.create(createIpfDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.ipfsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ipfsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIpfDto: UpdateIpfDto) {
-    return this.ipfsService.update(+id, updateIpfDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ipfsService.remove(+id);
-  }
-
-
-
 }

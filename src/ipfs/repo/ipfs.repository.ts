@@ -10,8 +10,8 @@ export class IpfsRepository {
   constructor(
     @InjectRepository(IpfsEntity) private ipfsRepository: Repository<IpfsEntity>) { }
 
-  save(user_id: string, cid: string, filename: string) {
-    this.ipfsRepository.save({ cid, filename, user_id, created_at: new Date() })
+  async save(user_id: string, cid: string, filename: string) {
+    await this.ipfsRepository.save({ cid, filename, user_id, created_at: new Date() })
   }
 
 }
