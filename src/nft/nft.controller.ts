@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards } from '@nestjs/common';
 import { NftService } from './nft.service';
-import { MintNftDto} from './dto/mint-nft.dto';
+import { MintNftDto } from './dto/mint-nft.dto';
 import { SetPriceNftDto } from './dto/set-price-nft.dto';
 import { UploadNftDto } from './dto/upload-nft-dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
@@ -61,10 +61,10 @@ export class NftController {
 
   @Post('lazyMint')
   @UseGuards(AuthGuard)
-  async lazyMint(){
+  @HttpCode(204)
+  async lazyMint() {
 
   }
-
 
   /*
   @Post('generateWalletWeb3/:userId')
@@ -82,7 +82,6 @@ export class NftController {
     return await this.nftService.generateWalletWeb3(userId);
   }
 */
-
 
   @Get(':id')
   findOne(@Param('id') id: string) {
