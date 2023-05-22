@@ -23,7 +23,6 @@ export class NftService {
     }
     catch (e) {
     }
-
     return price;
   }
 
@@ -52,7 +51,6 @@ export class NftService {
     return transactionHash;
   }
 
-
   async buy(tokenId: number) {
     try {
       // console.log(this.contract.methods);
@@ -78,9 +76,7 @@ export class NftService {
   async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {
     await this.setPrice(tokenId, price);
   }
-
-
-
+  
   /*
   // ALTTAKILER TEST EDILMEDI, alttakıler calısılacak, chat-gpt ile olusturuldu.
   async generateWalletWeb3(userId: string): Promise<any> {
