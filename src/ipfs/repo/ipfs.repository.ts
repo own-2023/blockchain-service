@@ -14,4 +14,8 @@ export class IpfsRepository {
     await this.ipfsRepository.save({ cid, filename, user_id, created_at: new Date() })
   }
 
+  async findByCid(cid: string){
+    return await this.ipfsRepository.findOne({where: {cid}});
+  }
+
 }

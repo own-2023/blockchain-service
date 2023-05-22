@@ -74,7 +74,11 @@ export class NftRepository {
   }
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    this.userLazyNftEntity.save({ cid: lazyMintNftDto.cid, name: lazyMintNftDto.name, user_id: lazyMintNftDto.user_id })
+    this.userLazyNftEntity.save({
+      cid: lazyMintNftDto.cid,
+      name: lazyMintNftDto.name,
+      user_id: lazyMintNftDto.user_id
+    })
   }
 
   async insertNft(mintNftDto: MintNftDto, result: Result) {

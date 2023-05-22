@@ -12,7 +12,7 @@ export class UserLazyNftEntity {
     user_id: number;
 
     @Column()
-    cid: number;
+    cid: string;
 
     @Column()
     name: string;

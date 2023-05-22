@@ -17,4 +17,15 @@ export class IpfsService {
     const cid = result.cid.toString();
     await this.ipfsRepository.save(user_id, cid, filename);
   }
+
+
+  async isIpfsFileExists(cid: string) {
+    const result = await this.ipfsRepository.findByCid(cid);
+    if(result === null){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
 }

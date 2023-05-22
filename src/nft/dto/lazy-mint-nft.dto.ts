@@ -6,9 +6,9 @@ export class LazyMintNftDto {
     @IsNotEmpty()
     user_id: number;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    cid: number;
+    cid: string;
 
     @IsString()
     @IsNotEmpty()
