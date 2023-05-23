@@ -3,15 +3,15 @@ import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { MintedNftEntity } from './minted-nft.entity';
 
 @Entity({
-    name: 'lazy_nfts',
+    name: 'nfts',
     database: 'db',
 })
 export class NftEntity {
-    @PrimaryGeneratedColumn()
-    nft_id: number;
+    @PrimaryGeneratedColumn('uuid')
+    nft_id: string;
 
     @Column()
-    owner_id: number;
+    owner_id: string;
 
     @Column()
     created_at: Date;

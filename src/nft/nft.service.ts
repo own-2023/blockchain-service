@@ -145,6 +145,10 @@ export class NftService {
     return await this.contract.methods.getAllImageMetadatas().call();
   }
 
+  async getAllNftsOwnedBy(ownerId: string){
+    return await this.nftRepository.getAllNftsOwnedBy(ownerId);
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} nft`;
   }

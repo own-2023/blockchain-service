@@ -1,14 +1,14 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsPositive, IsUUID } from 'class-validator';
 
 export class LazyMintNftDto {
 
-    @IsNumber()
+    @IsUUID()
     @IsNotEmpty()
-    ownerId: number;
+    ownerId: string;
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
-    ipfsId: number;
+    ipfsId: string;
 
     @IsNumber()
     @IsNotEmpty()

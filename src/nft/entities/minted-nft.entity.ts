@@ -3,16 +3,16 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typ
 import { NftEntity } from './nft.entity';
 
 @Entity({
-    name: 'user_nfts',
+    name: 'minted_nfts',
     database: 'db',
 })
 export class MintedNftEntity {
 
-    @PrimaryGeneratedColumn()
-    nft_id: number;
+    @PrimaryGeneratedColumn('uuid')
+    nft_id: string;
 
     @Column()
-    token_id: number;
+    token_id: string;
 
     @OneToOne(()=> NftEntity, nftEntity => nftEntity.mintedNftEntity)
     lazyNftEntity: NftEntity;

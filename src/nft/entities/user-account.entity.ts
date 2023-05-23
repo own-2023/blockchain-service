@@ -6,11 +6,11 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
     database: 'db',
 })
 export class UserAccountEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column()
-    user_id: number;
+    user_id: string;
 
     @Column()
     public_key: string;

@@ -1,11 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsPositive, IsUUID } from 'class-validator';
 
 
 export class MintNftDto {
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
-    userId: number;
+    userId: string;
 
     @IsString()
     @IsNotEmpty()
@@ -26,7 +26,6 @@ export class MintNftDto {
     @IsNumber()
     @IsPositive()
     tokenId: number;
-
 
     createdAt: Date;
     updatedAt: Date;

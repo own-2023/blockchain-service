@@ -7,8 +7,8 @@ import { NftEntity } from 'src/nft/entities/nft.entity';
     database: 'db',
 })
 export class IpfsEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({nullable: false})
     creator_id: string;

@@ -5,8 +5,8 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
     database: 'db',
 })
 export class UserEntity {
-    @PrimaryGeneratedColumn()
-    user_id: number;
+    @PrimaryGeneratedColumn('uuid')
+    user_id: string;
 
     @Column()
     username: string;

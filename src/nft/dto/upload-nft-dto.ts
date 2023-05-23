@@ -1,10 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsPositive, IsUUID } from 'class-validator';
+
 
 
 export class UploadNftDto {
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
-    creatorId: number;
+    creatorId: string;
 
     @IsNotEmpty()
     file: string;

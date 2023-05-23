@@ -28,7 +28,7 @@ export class NftRepository {
     return 'This action adds a new ethTransaction';
   }
 
-  async getAccountBalance(user_id: number) {
+  async getAccountBalance(user_id: string) {
     const userAccount = await this.userAccountEntity.findOneBy({
       user_id: user_id
     });
@@ -36,17 +36,17 @@ export class NftRepository {
 
   }
 
-  async getAccount(user_id: number) {
+  async getAccount(user_id: string) {
     const userAccount = await this.userAccountEntity.findOneBy({
       user_id: user_id
     });
     return userAccount;
   }
 
-  async getAllOwnedTokens(user_id: number) {
+  async getAllOwnedTokens(userId: string) {
     const userNfts = await this.nftEntity.findOne({
       where: {
-        owner_id: user_id,
+        owner_id: userId,
         mintedNftEntity: {
 
         }
@@ -58,14 +58,14 @@ export class NftRepository {
     return userNfts;
   }
 
-  async getOwnedNftByTokenId(token_id: number) {
+  async getOwnedNftByTokenId(token_id: string) {
     const userNfts = await this.mintedNftEntity.findOneBy({
       token_id: token_id
     });
     return userNfts;
   }
 
-  async getAccountAddress(user_id: number) {
+  async getAccountAddress(user_id: string) {
     const userAccount = await this.userAccountEntity.findOneBy({
       user_id: user_id
     });
@@ -73,7 +73,7 @@ export class NftRepository {
 
   }
 
-  async getNftCid(user_id: number, token_id: number) {
+  async getNftCid(user_id: string, token_id: number) {
     const userAccount = await this.userAccountEntity.findOneBy({
       user_id: user_id
     });
@@ -100,6 +100,12 @@ export class NftRepository {
       created_at: new Date(),
       user_id: mintNftDto.userId
     }]);
+  }
+
+  async getAllNftsOwnedBy(ownerId: string){
+    this.nftEntity.find({where: {
+      owner_id: ownerId,
+    }})
   }
 
   async buyNft(user_id: number, tokenId: number) {

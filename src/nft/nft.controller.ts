@@ -43,6 +43,11 @@ export class NftController {
     return await this.nftService.getAllNfts();
   }
 
+  @Get('getNfts/:id')
+  async getNftsOwned(@Param() ownerId: string){
+
+  }
+
   // TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
   // POST /nft/buy
   @Post('buy')
