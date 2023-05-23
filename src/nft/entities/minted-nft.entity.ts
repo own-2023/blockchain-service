@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
     name: 'user_nfts',
     database: 'db',
 })
-export class NftEntity {
+export class MintedNftEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -22,7 +22,4 @@ export class NftEntity {
 
     @Column()
     created_at: Date;
-
-    @Column()
-    updated_at: Date;
 }

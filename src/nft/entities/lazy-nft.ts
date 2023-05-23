@@ -20,6 +20,6 @@ export class LazyNftEntity {
     @Column()
     created_at: Date;
 
-    @Column()
-    updated_at: Date;
+    @Column({default: false})
+    isMinted: boolean;
 }

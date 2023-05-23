@@ -4,7 +4,7 @@ import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
 import { UserAccountEntity } from '../entities/user-account.entity';
 import { UserEntity } from '../entities/user.entity';
-import { NftEntity } from '../entities/nft.entity';
+import { MintedNftEntity } from '../entities/minted-nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
@@ -18,7 +18,7 @@ export class NftRepository {
   constructor(
     @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
     @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
-    @InjectRepository(NftEntity) private userNftEntity: Repository<NftEntity>,
+    @InjectRepository(MintedNftEntity) private userNftEntity: Repository<MintedNftEntity>,
     @InjectRepository(LazyNftEntity) private userLazyNftEntity: Repository<LazyNftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
@@ -87,7 +87,6 @@ export class NftRepository {
       token_id: result.tokenId,
       price: mintNftDto.price,
       created_at: new Date(),
-      updated_at: new Date(),
       user_id: mintNftDto.userId
     });
   }
