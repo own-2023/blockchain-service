@@ -3,7 +3,7 @@ import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { MintedNftEntity } from './minted-nft.entity';
 
 @Entity({
-    name: 'user_lazy_nfts',
+    name: 'lazy_nfts',
     database: 'db',
 })
 export class NftEntity {
@@ -16,14 +16,17 @@ export class NftEntity {
     @Column()
     created_at: Date;
 
+    @Column({default:0})
+    price: number;
+
     @Column({ default: false })
     isMinted: boolean;
 
     @ManyToOne(() => IpfsEntity, ipfs => ipfs.lazyNftEntity, {})
-    @JoinColumn()
+    @JoinColumn({name: 'ipfs_id'})
     ipfsEntity: IpfsEntity;
 
     @OneToOne(() => MintedNftEntity, mintedNftEntity => mintedNftEntity.lazyNftEntity, { nullable: true })
-    @JoinColumn({ name: 'ipfs_id' })
+    @JoinColumn({ name: 'minted_nft_id' })
     mintedNftEntity: MintedNftEntity[];
 }

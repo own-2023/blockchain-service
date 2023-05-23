@@ -11,11 +11,11 @@ export class IpfsService {
   constructor(@Inject('IPFS') private readonly ipfs: IPFSHTTPClient,
     private readonly ipfsRepository: IpfsRepository) { }
 
-  async uploadFile(file: Express.Multer.File, user_id: string) {
+  async uploadFile(file: Express.Multer.File, ownerId: string, nftName: string) {
     const result = await this.ipfs.add(file.buffer);
     const filename = file.originalname;
     const cid = result.cid.toString();
-    await this.ipfsRepository.save(user_id, cid, filename);
+    await this.ipfsRepository.save(ownerId, cid, filename, nftName);
   }
 
 

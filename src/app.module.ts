@@ -13,7 +13,7 @@ dotenv.config();
 @Module({
   imports: [EthTransactionsModule, IpfsModule, TypeOrmModule.forRoot({
     type: process.env.DB_TYPE as any,
-    host: process.env.DB_HOST,  // macos: localhost, windows: host.docker.internal
+    host: process.env.DB_HOST,
     port: process.env.DB_PORT as any,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,

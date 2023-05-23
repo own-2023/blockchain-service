@@ -10,12 +10,12 @@ export class IpfsRepository {
   constructor(
     @InjectRepository(IpfsEntity) private ipfsRepository: Repository<IpfsEntity>) { }
 
-  async save(user_id: string, cid: string, filename: string) {
-    await this.ipfsRepository.save({ cid, filename, user_id, created_at: new Date() })
+  async save(ownerId: string, cid: string, filename: string, nftName: string) {
+    await this.ipfsRepository.save({ cid, filename, creator_id: ownerId, created_at: new Date(), nft_name: nftName })
   }
 
-  async findByCid(cid: string){
-    return await this.ipfsRepository.findOne({where: {cid}});
+  async findByCid(cid: string) {
+    return await this.ipfsRepository.findOne({ where: { cid } });
   }
 
 }

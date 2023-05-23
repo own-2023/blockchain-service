@@ -81,26 +81,25 @@ export class NftRepository {
 
   }
 
-  async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
+  async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     this.nftEntity.save([{
-      name: lazyMintNftDto.name,
-      owner_is: lazyMintNftDto.owner_id,
-
+      owner_id: lazyMintNftDto.ownerId,
+      price: lazyMintNftDto.price,
       created_at: new Date(),
       ipfsEntity: {
-        id: lazyMintNftDto.ipfs_id,
+        id: lazyMintNftDto.ipfsId,
       }
     }])
   }
 
   async insertNft(mintNftDto: MintNftDto, result: Result) {
-    await this.mintedNftEntity.save({
+    await this.mintedNftEntity.save([{
       name: mintNftDto.name,
       token_id: result.tokenId,
       price: mintNftDto.price,
       created_at: new Date(),
       user_id: mintNftDto.userId
-    });
+    }]);
   }
 
   async buyNft(user_id: number, tokenId: number) {

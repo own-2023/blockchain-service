@@ -67,7 +67,7 @@ export class NftService {
   }
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    await this.nftRepository.lazyMintNft(lazyMintNftDto);
+    await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
   async createAccount(userId: string): Promise<any> {

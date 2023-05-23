@@ -4,13 +4,13 @@ export class LazyMintNftDto {
 
     @IsNumber()
     @IsNotEmpty()
-    owner_id: number;
+    ownerId: number;
 
     @IsString()
     @IsNotEmpty()
-    ipfs_id: number;
+    ipfsId: number;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
-    name: string;
+    price: number;
 }

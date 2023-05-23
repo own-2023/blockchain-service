@@ -8,7 +8,7 @@ import { NftEntity } from './nft.entity';
 })
 export class MintedNftEntity {
 
-    @Column()
+    @PrimaryGeneratedColumn()
     nft_id: number;
 
     @Column()

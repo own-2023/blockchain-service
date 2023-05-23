@@ -10,13 +10,13 @@ export class IpfsEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable: false})
     creator_id: string;
 
-    @Column()
+    @Column({nullable: false})
     cid: string;
 
-    @Column()
+    @Column({nullable: false})
     nft_name: string;
 
     @Column()

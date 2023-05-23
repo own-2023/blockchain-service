@@ -1,4 +1,4 @@
-import { Controller, Post, Param, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Param, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req, Body } from '@nestjs/common';
 import { IpfsService } from './ipfs.service';
 import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
@@ -15,9 +15,8 @@ export class IpfsController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(207)
   @UseGuards(AuthGuard)
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() request: Request) {
-    console.log(request);
-    const user_id: string = request['user'].user_id;
-    this.ipfsService.uploadFile(file, user_id);
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() request: Request, @Body() body) {
+    const ownerId: string = request['user'].user_id;
+    this.ipfsService.uploadFile(file, ownerId, body['nftName']);
   }
 }
