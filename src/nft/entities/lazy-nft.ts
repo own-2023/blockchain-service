@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
     name: 'user_lazy_nfts',
     database: 'db',
 })
-export class UserLazyNftEntity {
+export class LazyNftEntity {
     @PrimaryGeneratedColumn()
     id: number;
 

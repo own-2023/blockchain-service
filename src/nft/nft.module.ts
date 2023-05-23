@@ -9,7 +9,7 @@ import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAccountEntity } from './entities/user-account.entity';
 import { UserEntity } from './entities/user.entity';
-import { UserNftEntity } from './entities/user-nft.entity';
+import { NftEntity } from './entities/nft.entity';
 import { NftRepository } from './repo/nft.repository';
 import { create } from 'ipfs-http-client'
 import { IpfsService } from 'src/ipfs/ipfs.service';
@@ -18,7 +18,7 @@ import { IpfsModule } from 'src/ipfs/ipfs.module';
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserAccountEntity, UserEntity, UserNftEntity]), IpfsModule],
+  imports: [TypeOrmModule.forFeature([UserAccountEntity, UserEntity, NftEntity]), IpfsModule],
   controllers: [NftController],
   providers: [NftService, {
     provide: 'CONTRACT',

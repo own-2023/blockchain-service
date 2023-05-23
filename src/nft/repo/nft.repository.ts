@@ -4,12 +4,12 @@ import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
 import { UserAccountEntity } from '../entities/user-account.entity';
 import { UserEntity } from '../entities/user.entity';
-import { UserNftEntity } from '../entities/user-nft.entity';
+import { NftEntity } from '../entities/nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
 import { LazyMintNftDto } from '../dto/lazy-mint-nft.dto';
-import { UserLazyNftEntity } from '../entities/user-lazy-nft';
+import { LazyNftEntity } from '../entities/lazy-nft';
 
 
 @Injectable()
@@ -18,8 +18,8 @@ export class NftRepository {
   constructor(
     @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
     @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
-    @InjectRepository(UserNftEntity) private userNftEntity: Repository<UserNftEntity>,
-    @InjectRepository(UserLazyNftEntity) private userLazyNftEntity: Repository<UserLazyNftEntity>,
+    @InjectRepository(NftEntity) private userNftEntity: Repository<NftEntity>,
+    @InjectRepository(LazyNftEntity) private userLazyNftEntity: Repository<LazyNftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
