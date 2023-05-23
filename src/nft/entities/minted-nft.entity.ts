@@ -1,6 +1,6 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
-import { LazyNftEntity } from './lazy-nft';
+import { NftEntity } from './nft.entity';
 
 @Entity({
     name: 'user_nfts',
@@ -14,7 +14,7 @@ export class MintedNftEntity {
     @Column()
     token_id: number;
 
-    @OneToOne(()=> LazyNftEntity, lazyNftEntity => lazyNftEntity.mintedNftEntity)
-    lazyNftEntity: LazyNftEntity;
+    @OneToOne(()=> NftEntity, nftEntity => nftEntity.mintedNftEntity)
+    lazyNftEntity: NftEntity;
 
 }

@@ -9,7 +9,7 @@ import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
 import { LazyMintNftDto } from '../dto/lazy-mint-nft.dto';
-import { LazyNftEntity } from '../entities/lazy-nft';
+import { NftEntity } from '../entities/nft.entity';
 
 
 @Injectable()
@@ -19,7 +19,7 @@ export class NftRepository {
     @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
     @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
     @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
-    @InjectRepository(LazyNftEntity) private lazyNftEntity: Repository<LazyNftEntity>,
+    @InjectRepository(NftEntity) private nftEntity: Repository<NftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
@@ -44,9 +44,17 @@ export class NftRepository {
   }
 
   async getAllOwnedTokens(user_id: number) {
-    const userNfts = await this.mintedNftEntity.findOneBy({
-      user_id: user_id
-    });
+    const userNfts = await this.nftEntity.findOne({
+      where: {
+        owner_id: user_id,
+        mintedNftEntity: {
+
+        }
+      },
+      relations: {
+        ipfsEntity: true,
+      }
+    })
     return userNfts;
   }
 
@@ -74,11 +82,15 @@ export class NftRepository {
   }
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    this.lazyNftEntity.save({
-      cid: lazyMintNftDto.cid,
+    this.nftEntity.save([{
       name: lazyMintNftDto.name,
-      user_id: lazyMintNftDto.user_id
-    })
+      owner_is: lazyMintNftDto.owner_id,
+
+      created_at: new Date(),
+      ipfsEntity: {
+        id: lazyMintNftDto.ipfs_id,
+      }
+    }])
   }
 
   async insertNft(mintNftDto: MintNftDto, result: Result) {
@@ -92,14 +104,6 @@ export class NftRepository {
   }
 
   async buyNft(user_id: number, tokenId: number) {
-    const usernft = await this.mintedNftEntity.findOneBy({
-      nft_id: user_id,
-      token_id: tokenId
-    });
-
-    usernft.price = 0;
-    const result = await this.mintedNftEntity.save(usernft);
-    return result;
 
   }
 

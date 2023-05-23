@@ -67,7 +67,6 @@ export class NftService {
   }
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    this.ipfsService.isIpfsFileExists(lazyMintNftDto.cid);
     await this.nftRepository.lazyMintNft(lazyMintNftDto);
   }
 

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { LazyNftEntity } from 'src/nft/entities/lazy-nft';
+import { NftEntity } from 'src/nft/entities/nft.entity';
 
 
 @Entity({
@@ -22,7 +22,7 @@ export class IpfsEntity {
     @Column()
     created_at: Date;
 
-    @OneToMany(() => LazyNftEntity, lazyNftEntity => lazyNftEntity.ipfsEntity, {})
-    lazyNftEntity: LazyNftEntity;
+    @OneToMany(() => NftEntity, lazyNftEntity => lazyNftEntity.ipfsEntity, {})
+    lazyNftEntity: NftEntity;
 
 }
