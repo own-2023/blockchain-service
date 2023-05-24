@@ -103,7 +103,7 @@ export class NftRepository {
   }
 
   async getAllNftsOwnedBy(ownerId: string){
-    this.nftEntity.find({where: {
+    return await this.nftEntity.find({where: {
       owner_id: ownerId,
     }})
   }

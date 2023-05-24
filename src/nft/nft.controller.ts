@@ -44,8 +44,15 @@ export class NftController {
   }
 
   @Get('getNfts/:id')
-  async getNftsOwned(@Param() ownerId: string){
+  async getNftsOwned(@Param() ownerId: string) {
+    const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
+    nfts[0].ipfsEntity.cid,
+    nfts[0].nft_id,
+    nfts[0].price,
+    
+    return {
 
+    }
   }
 
   // TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
