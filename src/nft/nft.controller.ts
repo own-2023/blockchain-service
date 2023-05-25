@@ -6,17 +6,17 @@ import { UploadNftDto } from './dto/upload-nft-dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
 
 @ApiTags('nfts')
 @Controller('nfts')
 export class NftController {
   constructor(private readonly nftService: NftService) { }
 
+
   @ApiOperation({summary: 'mints an nft'})
   @ApiResponse({
-    status: 204,
-    type: MintNftDto
+    status: 204
   })
   @Post('mint')
   async mint(@Body() mintNftDto: MintNftDto) {
@@ -85,8 +85,6 @@ export class NftController {
     });
   }
 
-
-
   // TODO: Daha uygulanıp test edilmedi, yakın zamanda yapılması lazım, kod çalışmayabilir
   // POST /nft/buy
   @Post('buy')
@@ -99,7 +97,6 @@ export class NftController {
   @Post('put-on-sale')
   async putNftOnSale(tokenId: number, userId: number, price: number): Promise<boolean> {
     // Check if the token belongs to the user
-
     const success = await this.nftService.putNftOnSale(tokenId, userId, price);
     return success;
   }

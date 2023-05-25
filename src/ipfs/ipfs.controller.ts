@@ -4,7 +4,7 @@ import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from "@nestjs/swagger";
 
 // http://localhost:8080/{cid}}
 
