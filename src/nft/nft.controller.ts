@@ -77,10 +77,6 @@ export class NftController {
     description: "user's all nfts fetched",
     type: Array<{ nftId: String, nftPrice: String, nftImageUrl: String, nftName: String }>
   })
-  @ApiResponse({
-    status: 401,
-    description: 'unauthorized'
-  })
   @Get('get-user-nfts')
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request) {
@@ -98,21 +94,20 @@ export class NftController {
 
 
   @Post('buy')
-  async buyNft(buyerId: number, nftToken: string): Promise<any> {
+  async buyNft(buyerId: number, nftToken: string) {
     this.nftService.buyNft(buyerId, nftToken);
   }
 
   @ApiOperation({ summary: 'put an nft on sale' })
   @ApiResponse({
     status: 200,
-    description: 'nft is succesfully put on sale'
+    description: 'nft is succesfully put on sale',
   })
   @Post('put-on-sale')
   @UseGuards(AuthGuard)
-  async putNftOnSale(putNftOnSaleDto: PutNftOnSaleDto, @Req() request: Request): Promise<boolean> {
+  async putNftOnSale(putNftOnSaleDto: PutNftOnSaleDto, @Req() request: Request): Promise<void> {
     const ownerId: string = request['user'].user_id;
     const success = await this.nftService.putNftOnSale(putNftOnSaleDto.tokenId, putNftOnSaleDto.price);
-    return success;
   }
 
 
