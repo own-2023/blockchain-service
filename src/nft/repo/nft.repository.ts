@@ -24,10 +24,6 @@ export class NftRepository {
 
 
 
-  async uploadNft(user_id: number, file: Express.Multer.File) {
-    return 'This action adds a new ethTransaction';
-  }
-
   async getAccountBalance(user_id: string) {
     const userAccount = await this.userAccountEntity.findOneBy({
       user_id: user_id
@@ -102,14 +98,22 @@ export class NftRepository {
     }]);
   }
 
-  async getAllNftsOwnedBy(ownerId: string){
-    return await this.nftEntity.find({where: {
-      owner_id: ownerId,
-    }})
+  async getAllNftsOwnedBy(ownerId: string) {
+    return await this.nftEntity.find({
+      where: {
+        owner_id: ownerId,
+      },
+      relations: {
+        ipfsEntity: true,
+      }
+    })
   }
 
-  async buyNft(user_id: number, tokenId: number) {
-
+  async findOneNftById(nftId: string) {
+    return await this.nftEntity.findOne({
+      where: {
+        nft_id: nftId,
+      }
+    })
   }
-
 }

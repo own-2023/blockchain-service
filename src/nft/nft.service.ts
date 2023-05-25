@@ -149,15 +149,7 @@ export class NftService {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} nft`;
-  }
-
-  update(id: number, updateNftDto: UpdateNftDto) {
-    return `This action updates a #${id} nft`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} nft`;
+  async findOneByNft(nftId: string) {
+    const nft = await this.nftRepository.findOneNftById(nftId);
   }
 }

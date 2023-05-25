@@ -4,13 +4,19 @@ import { CreateIpfDto } from './dto/create-ipf.dto';
 import { UpdateIpfDto } from './dto/update-ipf.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 // http://localhost:8080/{cid}}
 
+@ApiTags('ipfs')
 @Controller('ipfs')
 export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) { }
-
+  @ApiOperation({summary: 'mints an nft'})
+  @ApiResponse({
+    status: 204,
+    type: 'file, user'
+  })
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(207)
