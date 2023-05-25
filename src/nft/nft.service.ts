@@ -17,7 +17,7 @@ export class NftService {
     private readonly ipfsService: IpfsService,
   ) { }
 
-  async getPrice(tokenId: number) {
+  async getPrice(tokenId: string) {
     let price = 0;
     try {
       price = await this.contract.methods.getPrice(tokenId).call();
@@ -27,7 +27,7 @@ export class NftService {
     return price;
   }
 
-  async setPrice(tokenId: number, newPrice: number) {
+  async setPrice(tokenId: string, newPrice: number) {
     let price = 0;
     try {
       // console.log(this.contract.methods);
@@ -75,12 +75,12 @@ export class NftService {
     return account;
   }
 
-  async buyNft(buyerId: number, tokenId: number): Promise<any> {
+  async buyNft(buyerId: number, tokenId: string): Promise<any> {
     const NftPrice = this.getPrice(tokenId);
     this.contract.methods.buy(tokenId).send({ from: buyerId, value: NftPrice });
   }
 
-  async putNftOnSale(tokenId: number, user_id: number, price: number): Promise<any> {
+  async putNftOnSale(tokenId: string, price: number): Promise<any> {
     await this.setPrice(tokenId, price);
   }
 
@@ -151,5 +151,6 @@ export class NftService {
 
   async findOneByNft(nftId: string) {
     const nft = await this.nftRepository.findOneNftById(nftId);
+    return nft
   }
 }

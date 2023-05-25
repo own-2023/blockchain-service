@@ -5,33 +5,39 @@ import { ApiProperty } from '@nestjs/swagger/dist';
 export class MintNftDto {
 
     @IsUUID()
-    @IsNotEmpty()
     @ApiProperty()
+    @IsNotEmpty()
+
     userId: string;
 
     @IsString()
-    @IsNotEmpty()
     @ApiProperty()
+    @IsNotEmpty()
+
     name: string;
 
     @IsString()
-    @IsNotEmpty()
     @ApiProperty()
+    @IsNotEmpty()
+
     imageUrl: string;
 
     @IsString()
-    @IsNotEmpty()
     @ApiProperty()
+    @IsNotEmpty()
+
     from: string;
 
     @IsNumber()
-    @IsPositive()
     @ApiProperty()
+    @IsPositive()
+
     price: number;
 
     @IsNumber()
-    @IsPositive()
     @ApiProperty()
+    @IsPositive()
+
     tokenId: number;
 
     createdAt: Date;

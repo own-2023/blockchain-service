@@ -3,10 +3,10 @@ import { ApiProperty } from '@nestjs/swagger/dist';
 
 export class SetPriceNftDto {
 
-    @IsNumber()
+    @IsString()
     @IsPositive()
     @ApiProperty()
-    tokenId: number;
+    tokenId: string;
 
     @IsNumber()
     @IsPositive()

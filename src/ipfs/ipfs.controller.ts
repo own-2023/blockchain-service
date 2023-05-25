@@ -14,7 +14,7 @@ export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) { }
   @ApiOperation({summary: 'mints an nft'})
   @ApiResponse({
-    status: 204,
+    status: 201,
     type: 'file, user'
   })
   @Post('upload')
