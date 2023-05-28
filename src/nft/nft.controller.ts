@@ -2,14 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { NftService } from './nft.service';
 import { MintNftDto } from './dto/mint-nft.dto';
 import { SetPriceNftDto } from './dto/set-price-nft.dto';
-import { UploadNftDto } from './dto/upload-nft-dto';
-import { UpdateNftDto } from './dto/update-nft.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
 import { PutNftOnSaleDto } from './dto/put-nft-on-sale.dto';
-import { type } from 'os';
 import { BuyNftResponseDto } from './dto/buy-nft.response.dto';
+import { GetUserNftsResponseDto } from './dto/get-user-nfts.response.dto';
 
 @ApiTags('nfts')
 @Controller('nfts')
@@ -75,11 +73,11 @@ export class NftController {
   @ApiResponse({
     status: 200,
     description: "user's all nfts fetched",
-    type: Array<{ nftId: String, nftPrice: String, nftImageUrl: String, nftName: String }>
+    type: Array<GetUserNftsResponseDto>
   })
   @Get('get-user-nfts')
   @UseGuards(AuthGuard)
-  async getNftsOwned(@Req() request: Request) {
+  async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
     const ownerId: string = request['user'].user_id;
     const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
     return nfts.map((nft) => {

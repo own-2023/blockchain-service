@@ -19,6 +19,9 @@ export class NftEntity {
     @Column({ default: 0 })
     price: number;
 
+    @Column({default: false})
+    isOnSale: boolean;
+
     @Column({ default: false })
     isMinted: boolean;
 

@@ -45,7 +45,8 @@ export class NftService {
     // const gasPrice = await this.web3.eth.getGasPrice();
     // const gasLimit = 21000;
     try {
-      transactionHash = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name, mintNftDto.price).send({ from: mintNftDto.from, gas: 4712388 });
+      transactionHash = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name, mintNftDto.price)
+      .send({ from: mintNftDto.from, gas: 4712388 });
       this.nftRepository.insertNft(mintNftDto, transactionHash['events']['Transfer']['returnValues']);
     }
     catch (e) {
@@ -70,10 +71,6 @@ export class NftService {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
-  async createAccount(userId: string): Promise<any> {
-    const account = this.web3.eth.accounts.create();
-    return account;
-  }
 
   async buyNft(buyerId: number, tokenId: string): Promise<any> {
     const NftPrice = this.getPrice(tokenId);

@@ -8,7 +8,7 @@ export class GetUserNftsResponseDto{
 
     @IsNotEmpty()
     @IsNumber()
-    price: number;
+    nftPrice: number;
 
     @IsNotEmpty()
     @IsString()

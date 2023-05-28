@@ -7,6 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EthTransaction } from './eth-transactions/entities/eth-transaction.entity';
 import { NftModule } from './nft/nft.module';
 import { AuthModule } from './auth/auth.module';
+import { EthereumController } from './ethereum/ethereum.controller';
+import { EthereumService } from './ethereum/ethereum.service';
+import { EthereumModule } from './ethereum/ethereum.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -21,10 +24,11 @@ dotenv.config();
     entities: [EthTransaction],
     autoLoadEntities: true,
     synchronize: true,
-  }), NftModule, AuthModule],
-  controllers: [AppController],
+  }), NftModule, AuthModule, EthereumModule],
+  controllers: [AppController, EthereumController],
   providers: [
-    AppService, 
+    AppService,
+    EthereumService, 
     ],
 })
 export class AppModule {}
