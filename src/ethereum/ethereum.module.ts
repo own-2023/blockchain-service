@@ -6,10 +6,11 @@ import { EthereumController } from './ethereum.controller';
 import { EthereumService } from './ethereum.service';
 import { EthereumAccountEntity } from './entities/ethereum-account.entity';
 import { EthereumAccountRepository } from './repositories/ethereum-account.repository';
+import { AuthModule } from 'src/auth/auth.module';
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EthereumAccountEntity])],
+  imports: [TypeOrmModule.forFeature([EthereumAccountEntity]), AuthModule],
   controllers: [EthereumController],
   providers: [EthereumService, {
     provide: 'WEB3',
