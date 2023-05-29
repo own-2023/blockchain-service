@@ -7,12 +7,9 @@ import { AbiItem } from 'web3-utils';
 import * as fs from 'fs';
 import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserAccountEntity } from './entities/user-account.entity';
-import { UserEntity } from './entities/user.entity';
 import { MintedNftEntity } from './entities/minted-nft.entity';
 import { NftRepository } from './repo/nft.repository';
 import { create } from 'ipfs-http-client'
-import { IpfsService } from 'src/ipfs/ipfs.service';
 import { IpfsModule } from 'src/ipfs/ipfs.module';
 import { NftEntity } from './entities/nft.entity';
 import { AuthModule } from 'src/auth/auth.module';
@@ -20,7 +17,7 @@ import { AuthModule } from 'src/auth/auth.module';
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserAccountEntity, UserEntity, MintedNftEntity, NftEntity]), IpfsModule, AuthModule],
+  imports: [TypeOrmModule.forFeature([ MintedNftEntity, NftEntity]), IpfsModule, AuthModule],
   controllers: [NftController],
   providers: [NftService, {
     provide: 'CONTRACT',

@@ -2,8 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
-import { UserAccountEntity } from '../entities/user-account.entity';
-import { UserEntity } from '../entities/user.entity';
+
 import { MintedNftEntity } from '../entities/minted-nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
@@ -16,28 +15,13 @@ import { NftEntity } from '../entities/nft.entity';
 export class NftRepository {
 
   constructor(
-    @InjectRepository(UserEntity) private userEntity: Repository<UserEntity>,
-    @InjectRepository(UserAccountEntity) private userAccountEntity: Repository<UserAccountEntity>,
     @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
     @InjectRepository(NftEntity) private nftEntity: Repository<NftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
 
-  async getAccountBalance(user_id: string) {
-    const userAccount = await this.userAccountEntity.findOneBy({
-      user_id: user_id
-    });
-    return userAccount.balance;
 
-  }
-
-  async getAccount(user_id: string) {
-    const userAccount = await this.userAccountEntity.findOneBy({
-      user_id: user_id
-    });
-    return userAccount;
-  }
 
   async getAllOwnedTokens(userId: string) {
     const userNfts = await this.nftEntity.findOne({
@@ -61,21 +45,7 @@ export class NftRepository {
     return userNfts;
   }
 
-  async getAccountAddress(user_id: string) {
-    const userAccount = await this.userAccountEntity.findOneBy({
-      user_id: user_id
-    });
-    return userAccount.public_key;
 
-  }
-
-  async getNftCid(user_id: string, token_id: number) {
-    const userAccount = await this.userAccountEntity.findOneBy({
-      user_id: user_id
-    });
-    return userAccount.public_key;
-
-  }
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     this.nftEntity.save([{
