@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('ethereum')
 export class EthereumController {
 
-    constructor(@Inject() private ethereumService: EthereumService) { }
+    constructor(private ethereumService: EthereumService) { }
 
     @Post('create')
     @UseGuards(AuthGuard)
@@ -13,5 +13,6 @@ export class EthereumController {
         const userId: string = request['user'].user_id;
         await this.ethereumService.createAccount(userId)
     }
+
 
 }

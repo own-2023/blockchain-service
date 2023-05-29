@@ -22,10 +22,9 @@ dotenv.config();
     autoLoadEntities: true,
     synchronize: true,
   }), NftModule, AuthModule, EthereumModule],
-  controllers: [AppController, EthereumController],
+  controllers: [AppController],
   providers: [
     AppService,
-    EthereumService, 
     ],
 })
 export class AppModule {}

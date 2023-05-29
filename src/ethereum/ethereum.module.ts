@@ -19,6 +19,5 @@ dotenv.config();
       return web3;
     },
   }, EthereumAccountRepository],
-  exports: ['WEB3']
 })
 export class EthereumModule { }
