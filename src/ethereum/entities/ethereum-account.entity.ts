@@ -1,5 +1,10 @@
-import { Column, PrimaryColumn } from "typeorm";
+import { Column, PrimaryColumn, Entity } from "typeorm";
 
+
+@Entity({
+    name: 'ethereum_accounts',
+    database: 'db',
+})
 export class EthereumAccountEntity{
     @PrimaryColumn()
     address: string;
