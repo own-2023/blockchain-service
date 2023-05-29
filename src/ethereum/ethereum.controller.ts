@@ -14,5 +14,4 @@ export class EthereumController {
         await this.ethereumService.createAccount(userId)
     }
 
-
 }
