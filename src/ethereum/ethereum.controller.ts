@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Inject, Post, UseGuards, Req, Get, Param } from '@nestjs/common';
 import { EthereumService } from './ethereum.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -12,6 +12,22 @@ export class EthereumController {
     async createEthereumAccount(@Req() request: Request) {
         const userId: string = request['user'].user_id;
         await this.ethereumService.createAccount(userId)
+    }
+
+    @Get('get-account')
+    @UseGuards(AuthGuard)
+    async getEthereumAccount(@Req() request: Request) {
+        const userId: string = request['user'].user_id;
+        const response = await this.ethereumService.getAccount(userId);
+        return response;
+    }
+
+    @Get('get-balance/:address')
+    @UseGuards(AuthGuard)
+    async getEthereumBalance(@Param('address') address: string, @Req() request: Request) {
+        const userId: string = request['user'].user_id;
+        const balance = await this.ethereumService.getBalance(address);
+        return balance;
     }
 
 

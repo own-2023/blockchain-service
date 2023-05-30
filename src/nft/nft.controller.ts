@@ -79,6 +79,7 @@ export class NftController {
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
     const ownerId: string = request['user'].user_id;
+    console.log(ownerId);
     const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
     return nfts.map((nft) => {
       return {
