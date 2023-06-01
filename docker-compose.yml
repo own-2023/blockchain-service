@@ -5,6 +5,13 @@ services:
     image: trufflesuite/ganache-cli:latest
     ports:
       - "127.0.0.1:7545:8545"
+    volumes:
+      - ganache_data:/root/.ethereum
+
+    command: [
+      "--db=/root/.ethereum",
+    ]
+
  
       
   ipfs-kubo:
@@ -33,3 +40,4 @@ services:
 volumes:
   ipfs-data:
   mysql-data:
+  ganache_data: 

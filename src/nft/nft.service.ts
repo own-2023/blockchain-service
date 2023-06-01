@@ -30,7 +30,7 @@ export class NftService {
   async setPrice(tokenId: string, newPrice: number) {
     let price = 0;
     try {
-      // console.log(this.contract.methods);
+
       price = await this.contract.methods.setPrice(tokenId, newPrice).send();
     }
     catch (e) {
@@ -57,7 +57,6 @@ export class NftService {
 
   async buy(tokenId: number) {
     try {
-      // console.log(this.contract.methods);
       return await this.contract.methods.buy(tokenId).send();
     }
     catch (e) {
@@ -73,8 +72,8 @@ export class NftService {
 
 
   async buyNft(buyerId: number, tokenId: string): Promise<any> {
-    const NftPrice = this.getPrice(tokenId);
-    this.contract.methods.buy(tokenId).send({ from: buyerId, value: NftPrice });
+    const nftPrice = this.getPrice(tokenId);
+    this.contract.methods.buy(tokenId).send({ from: buyerId, value: nftPrice });
   }
 
   async putNftOnSale(tokenId: string, price: number): Promise<any> {

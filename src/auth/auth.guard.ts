@@ -18,19 +18,20 @@ import {
       if (!token) {
         throw new UnauthorizedException();
       }
+
       try {
         const payload = await this.jwtService.verifyAsync(
           token,
           {
-            secret: jwtConstants.secret
+            secret:jwtConstants.secret
           }
         );
-        // 💡 We're assigning the payload to the request object here
-        // so that we can access it in our route handlers
+
 
         request['user'] = payload;
-      } catch {
-        console.log("error unauthroized");
+      } catch(err) {
+        
+        console.log(err);
 
         throw new UnauthorizedException();
       }

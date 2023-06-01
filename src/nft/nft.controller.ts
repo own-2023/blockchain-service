@@ -53,6 +53,7 @@ export class NftController {
   @Post('buy/:tokenId')
   async buy(@Param('tokenId') tokenId: string): Promise<BuyNftResponseDto> {
     const price = await this.nftService.getPrice(tokenId);
+    
     return { price, tokenId };
   }
 
@@ -79,7 +80,6 @@ export class NftController {
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
     const ownerId: string = request['user'].user_id;
-    console.log(ownerId);
     const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
     return nfts.map((nft) => {
       return {
