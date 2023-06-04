@@ -82,7 +82,7 @@ export class NftRepository {
   async findOneNftById(nftId: string) {
     return await this.nftEntity.findOne({
       where: {
-        nft_id: nftId,
+        nft_id: nftId
       }
     })
   }

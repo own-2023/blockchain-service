@@ -17,9 +17,10 @@ export class EthereumController {
     @Get('get-account')
     @UseGuards(AuthGuard)
     async getEthereumAccount(@Req() request: Request) {
+        console.log(request['user']);
         const userId: string = request['user'].user_id;
         const response = await this.ethereumService.getAccount(userId);
-        return response;
+        return { address: response.address, private_key: response.privateKey };
     }
 
     @Get('get-balance/:address')

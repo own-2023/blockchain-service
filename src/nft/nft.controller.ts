@@ -8,6 +8,7 @@ import { ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
 import { PutNftOnSaleDto } from './dto/put-nft-on-sale.dto';
 import { BuyNftResponseDto } from './dto/buy-nft.response.dto';
 import { GetUserNftsResponseDto } from './dto/get-user-nfts.response.dto';
+import axios from 'axios';
 
 @ApiTags('nfts')
 @Controller('nfts')
@@ -53,7 +54,7 @@ export class NftController {
   @Post('buy/:tokenId')
   async buy(@Param('tokenId') tokenId: string): Promise<BuyNftResponseDto> {
     const price = await this.nftService.getPrice(tokenId);
-    
+
     return { price, tokenId };
   }
 
@@ -120,13 +121,28 @@ export class NftController {
     await this.nftService.lazyMintNft(LazyMintNftDto);
   }
 
-  @Get(':id')
+  @Get(':nftId')
   @ApiOperation({ summary: "get a nft by id" })
   @ApiResponse({
     status: 200,
   })
   @HttpCode(200)
-  async getOneNftById(nftId: string) {
+  async getOneNftById(@Param() nftId: string) {
     const nft = await this.nftService.findOneByNft(nftId)
+    let response;
+    try {
+      response = await axios.get('http://127.0.0.1/users/username', { data: { user_id: nft.owner_id } });
+    }
+    catch (err) {
+      console.log(err);
+    }
+    const username = response.data['username'];
+    return {
+      nftPrice: nft.price,
+      nftOwner: username,
+      nftName: nft.ipfsEntity.nft_name,
+      nftUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`
+    }
+
   }
 }
