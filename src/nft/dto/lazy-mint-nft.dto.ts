@@ -18,3 +18,20 @@ export class LazyMintNftDto {
     @ApiProperty()
     price: number;
 }
+
+export class UserLazyMintNftDto {
+    @ApiProperty()
+    id: string;
+
+    @ApiProperty()
+    creator_id: string;
+
+    @ApiProperty()
+    cid: string;
+
+    @ApiProperty()
+    nftName: string;
+
+    @ApiProperty()
+    created_at: Date;
+  }

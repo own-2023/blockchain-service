@@ -68,6 +68,14 @@ export class NftController {
     return await this.nftService.getAllNfts();
   }
 
+  @Get('get-user-lazy-minted-nfts')
+  @UseGuards(AuthGuard)
+  async getUserLazyMintedNfts(@Req() request: Request) {
+    const userId: string = request['user'].user_id;
+    const result = await this.nftService.getUserLazyMintedNfts(userId);
+    return result;
+  }
+
 
   @ApiOperation({ summary: "get a user's all nfts" })
   @ApiResponse({
@@ -79,7 +87,6 @@ export class NftController {
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
     const ownerId: string = request['user'].user_id;
-    console.log(ownerId);
     const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
     return nfts.map((nft) => {
       return {
@@ -129,4 +136,6 @@ export class NftController {
   async getOneNftById(nftId: string) {
     const nft = await this.nftService.findOneByNft(nftId)
   }
+
+
 }

@@ -3,9 +3,9 @@ version: '3'
 services:
   ganache:
     image: trufflesuite/ganache-cli:latest
+    command: ganache-cli --port 8545 --networkId 5777 --mnemonic "kerem halil istanbul bitirme proje"
     ports:
       - "127.0.0.1:7545:8545"
- 
       
   ipfs-kubo:
     image: ipfs/kubo:v0.19.1
@@ -29,6 +29,7 @@ services:
       - '4306:3306'
     volumes:
       - mysql-data:/var/lib/mysql
+    
 
 volumes:
   ipfs-data:

@@ -7,7 +7,7 @@ import { MintedNftEntity } from '../entities/minted-nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
-import { LazyMintNftDto } from '../dto/lazy-mint-nft.dto';
+import { LazyMintNftDto, UserLazyMintNftDto } from '../dto/lazy-mint-nft.dto';
 import { NftEntity } from '../entities/nft.entity';
 
 
@@ -17,6 +17,7 @@ export class NftRepository {
   constructor(
     @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
     @InjectRepository(NftEntity) private nftEntity: Repository<NftEntity>,
+    @InjectRepository(IpfsEntity) private ipfsEntity: Repository<IpfsEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
 
@@ -77,6 +78,23 @@ export class NftRepository {
         ipfsEntity: true,
       }
     })
+  }
+
+  async getAllLazyMintedByUserId(userId: string) {
+    let nfts:IpfsEntity[] = [];
+    nfts =  await  this.ipfsEntity.find({ where: { creator_id: userId } });
+
+    const result: UserLazyMintNftDto[] = nfts.map( nft => {
+      const userLazyMintNftDTO = new UserLazyMintNftDto();
+      userLazyMintNftDTO.id = nft.id;
+      userLazyMintNftDTO.creator_id = nft.creator_id;
+      userLazyMintNftDTO.cid = nft.cid;
+      userLazyMintNftDTO.nftName = nft.nft_name;
+      userLazyMintNftDTO.created_at = nft.created_at;
+      return userLazyMintNftDTO;
+    });
+
+    return result;
   }
 
   async findOneNftById(nftId: string) {

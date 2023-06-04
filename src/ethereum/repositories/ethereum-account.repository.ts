@@ -20,11 +20,9 @@ export class EthereumAccountRepository {
     }
 
     async getAccount(user_id: string) {
-        console.log(user_id);
         const userAccount = await this.ethereumAccountRepository.findOneBy({
             user_id: user_id
           });
-          console.log(userAccount);
           return userAccount;
 
     }
