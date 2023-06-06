@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req, Put } from '@nestjs/common';
 import { NftService } from './nft.service';
 import { MintNftDto } from './dto/mint-nft.dto';
 import { SetPriceNftDto } from './dto/set-price-nft.dto';
@@ -35,14 +35,11 @@ export class NftController {
   }
 
 
-  @ApiOperation({ summary: "set nft's price" })
-  @ApiResponse({
-    status: 201,
-    type: Number,
-  })
-  @Post('setPrice')
-  async setPrice(@Body() setPriceNftDto: SetPriceNftDto) {
-    return await this.nftService.setPrice(setPriceNftDto.tokenId, setPriceNftDto.price);
+  @Put(':nftId/set-price/:newPrice')
+  async setPrice(@Param() params: any) {
+    const price = await this.nftService.setPrice(params.nftId, params.newPrice);
+    
+    console.log(price);
   }
 
 

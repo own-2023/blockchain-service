@@ -79,6 +79,16 @@ export class NftRepository {
     })
   }
 
+  async setPrice(nftId: string, newPrice: number){
+    try{
+      this.nftEntity.update({nft_id: nftId},  {price: newPrice});
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
+
   async findOneNftById(nftId: string) {
     try {return await this.nftEntity.findOne({
       relations: {
