@@ -19,7 +19,6 @@ export class EthereumService {
     }
 
     async getBalance(address: string) {
-        console.log(address);
         const balance = await this.web3.eth.getBalance(address);
         return { balance };
     }
