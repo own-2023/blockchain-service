@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
@@ -80,10 +80,18 @@ export class NftRepository {
   }
 
   async findOneNftById(nftId: string) {
-    return await this.nftEntity.findOne({
+    try {return await this.nftEntity.findOne({
+      relations: {
+        ipfsEntity: true
+      },
       where: {
         nft_id: nftId
       }
-    })
+      
+    })}
+    catch(err){
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
   }
 }

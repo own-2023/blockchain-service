@@ -127,11 +127,11 @@ export class NftController {
     status: 200,
   })
   @HttpCode(200)
-  async getOneNftById(@Param() nftId: string) {
-    const nft = await this.nftService.findOneByNft(nftId)
+  async getOneNftById(@Param() params: any) {
+    const nft = await this.nftService.findOneByNft(params.nftId)
     let response;
     try {
-      response = await axios.get('http://127.0.0.1/users/username', { data: { user_id: nft.owner_id } });
+      response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: nft.owner_id } });
     }
     catch (err) {
       console.log(err);
