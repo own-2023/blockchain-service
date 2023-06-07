@@ -6,6 +6,7 @@ import { IpfsService } from 'src/ipfs/ipfs.service';
 import Web3 from 'web3';
 import { NftRepository } from './repo/nft.repository';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
+import { NftEntity } from './entities/nft.entity';
 
 
 @Injectable()
@@ -27,18 +28,19 @@ export class NftService {
     return price;
   }
 
-  async setPrice(tokenId: string, newPrice: number) {
+  async setPrice(nft: NftEntity, newPrice: number) {
     let price = 0;
-    try {
+    
 
-      price = await this.contract.methods.setPrice(tokenId, newPrice).send();
+    if (nft.isMinted === true) {
+      await this.nftRepository.setPrice(nft.nft_id, newPrice);
+      await this.contract.methods.setPrice(nft.mintedNftEntity.token_id, newPrice).send();
     }
-    catch (e) {
+    else {
+      await this.nftRepository.setPrice(nft.nft_id, newPrice);
     }
-    return price;
+    return newPrice;
   }
-
-
 
   async mint(mintNftDto: MintNftDto) {
     let transactionHash: any = -1;
@@ -46,7 +48,7 @@ export class NftService {
     // const gasLimit = 21000;
     try {
       transactionHash = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name, mintNftDto.price)
-      .send({ from: mintNftDto.from, gas: 4712388 });
+        .send({ from: mintNftDto.from, gas: 4712388 });
       this.nftRepository.insertNft(mintNftDto, transactionHash['events']['Transfer']['returnValues']);
     }
     catch (e) {
@@ -70,70 +72,23 @@ export class NftService {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
+  async findOneById(nftId: string){
+    let nft: NftEntity;
+    try {
+      nft = await this.nftRepository.findOneNftById(nftId);
+    }
+    catch (error) {
+      console.log(error);
+    }
+
+    return nft;
+  }
+
 
   async buyNft(buyerId: number, tokenId: string): Promise<any> {
     const nftPrice = this.getPrice(tokenId);
     this.contract.methods.buy(tokenId).send({ from: buyerId, value: nftPrice });
   }
-
-  async putNftOnSale(tokenId: string, price: number): Promise<any> {
-    await this.setPrice(tokenId, price);
-  }
-
-  /*
-  // ALTTAKILER TEST EDILMEDI, alttakıler calısılacak, chat-gpt ile olusturuldu.
-  async generateWalletWeb3(userId: string): Promise<any> {
-    const account = this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
-    const wallet = this.web3.eth.accounts.wallet.add(account);
-    const keystore = wallet.encrypt(this.web3.utils.randomHex(32));
-
-    return {keystore, wallet, account}; 
-  }
-
-  async addAccountToWallet(walletMnemonic: string, accountIndex: number): Promise<string> {
-    const provider = new HDWalletProvider({
-      mnemonic: walletMnemonic,
-      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string,
-    });
-    const web3 = new Web3(provider);
-  
-    const accounts = await web3.eth.getAccounts();
-    const newAccount = accounts[accountIndex];
-  
-    // Unlock the wallet with the new account
-    await web3.eth.personal.unlockAccount(newAccount, null, null);
-  
-    return newAccount;
-  }
-
-  async getAccountFromWallet(walletMnemonic: string, accountIndex: number): Promise<string> {
-    const provider = new HDWalletProvider({
-      mnemonic: walletMnemonic,
-      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string // Replace with your Infura project ID
-    });
-    const web3 = new Web3(provider);
-  
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[accountIndex];
-  
-    return account;
-  }
-
-  async addWalletToAccount(account: string, walletMnemonic: string): Promise<boolean> {
-    const provider = new HDWalletProvider({
-      mnemonic: walletMnemonic,
-      providerOrUrl: process.env.WEB3_HTTP_PROVIDER_URL as string, // Replace with your Infura project ID
-    });
-    const web3 = new Web3(provider);
-  
-    // Unlock the account with the wallet mnemonic
-    await web3.eth.personal.importRawKey(walletMnemonic, null);
-    await web3.eth.personal.unlockAccount(account, null, null);
-  
-    return true;
-  }
-  
-  */
 
 
 
@@ -141,12 +96,8 @@ export class NftService {
     return await this.contract.methods.getAllImageMetadatas().call();
   }
 
-  async getAllNftsOwnedBy(ownerId: string){
+  async getAllNftsOwnedBy(ownerId: string) {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
 
-  async findOneByNft(nftId: string) {
-    const nft = await this.nftRepository.findOneNftById(nftId);
-    return nft
-  }
 }

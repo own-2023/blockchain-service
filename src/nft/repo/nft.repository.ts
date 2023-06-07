@@ -79,29 +79,42 @@ export class NftRepository {
     })
   }
 
-  async setPrice(nftId: string, newPrice: number){
-    try{
-      this.nftEntity.update({nft_id: nftId},  {price: newPrice});
+  async setPrice(nftId: string, newPrice: number) {
+    try {
+      this.nftEntity.update({ nft_id: nftId }, { price: newPrice });
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
   }
 
 
   async findOneNftById(nftId: string) {
-    try {return await this.nftEntity.findOne({
-      relations: {
-        ipfsEntity: true
-      },
-      where: {
-        nft_id: nftId
-      }
-      
-    })}
-    catch(err){
+    try {
+      return await this.nftEntity.findOne({
+        relations: {
+          ipfsEntity: true,
+          mintedNftEntity: true,
+        },
+        where: {
+          nft_id: nftId
+        }
+
+      })
+    }
+    catch (err) {
       console.log(err);
       throw new InternalServerErrorException();
+    }
+  }
+
+  async setOnSale(nft: NftEntity) {
+    nft.isOnSale = true;
+    try {
+      await this.nftEntity.save(nft);
+    }
+    catch (err) {
+      console.log(err);
     }
   }
 }

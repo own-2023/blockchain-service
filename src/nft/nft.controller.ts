@@ -36,10 +36,12 @@ export class NftController {
 
 
   @Put(':nftId/set-price/:newPrice')
+  @HttpCode(200)
   async setPrice(@Param() params: any) {
-    const price = await this.nftService.setPrice(params.nftId, params.newPrice);
+    const nft = await this.nftService.findOneById(params.nft_id);
+    const newPrice = await this.nftService.setPrice(nft, params.newPrice);
     
-    console.log(price);
+    return { price: newPrice };
   }
 
 
@@ -95,18 +97,6 @@ export class NftController {
     this.nftService.buyNft(buyerId, nftToken);
   }
 
-  @ApiOperation({ summary: 'put an nft on sale' })
-  @ApiResponse({
-    status: 200,
-    description: 'nft is succesfully put on sale',
-  })
-  @Post('put-on-sale')
-  @UseGuards(AuthGuard)
-  async putNftOnSale(putNftOnSaleDto: PutNftOnSaleDto, @Req() request: Request): Promise<void> {
-    const ownerId: string = request['user'].user_id;
-    const success = await this.nftService.putNftOnSale(putNftOnSaleDto.tokenId, putNftOnSaleDto.price);
-  }
-
 
   @ApiOperation({ summary: 'lazy mint an nft' })
   @ApiResponse({
@@ -125,7 +115,7 @@ export class NftController {
   })
   @HttpCode(200)
   async getOneNftById(@Param() params: any) {
-    const nft = await this.nftService.findOneByNft(params.nftId)
+    const nft = await this.nftService.findOneById(params.nftId)
     let response;
     try {
       response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: nft.owner_id } });
