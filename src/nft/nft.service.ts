@@ -88,9 +88,23 @@ export class NftService {
   }
 
   async getAllNfts() {
+    let nfts: NftEntity[] = [];
+    try {
+      const mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
+      nfts = nfts.concat(mintedNfts);
+    }
+    catch (err) {
+      console.log(err);
+    }
 
-    
-    //return await this.contract.methods.getAllImageMetadatas().call();
+    try {
+      const lazyNfts = await this.nftRepository.getAllNftsOnSale();
+      nfts = nfts.concat(lazyNfts);
+    }
+    catch (err) {
+      console.log(err);
+    }
+    return nfts;
   }
 
   async getAllNftsOwnedBy(ownerId: string) {

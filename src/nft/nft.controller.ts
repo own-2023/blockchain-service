@@ -55,8 +55,15 @@ export class NftController {
   })
   @Get('get-all-nfts')
   async getAllNfts() {
-    console.log('entered');
-    return await this.nftService.getAllNfts();
+    const nfts = await this.nftService.getAllNfts();
+    return nfts.map((nft) => {
+      return{
+        nftName: nft.ipfsEntity.nft_name,
+        nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
+        nftPrice: nft.price,
+        nftId: nft.nft_id,
+      }
+    })
   }
 
 

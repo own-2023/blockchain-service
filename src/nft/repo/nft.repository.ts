@@ -42,8 +42,9 @@ export class NftRepository {
   }
 
 
-  async getAllNfts(){
-    const nfts = await this.nftEntityRepository.find();
+  async getAllNftsOnSale() {
+    const nfts = await this.nftEntityRepository.find({ relations: { ipfsEntity: true, mintedNftEntity: true }, where: { isOnSale: true } });
+    return nfts;
   }
 
 
