@@ -42,6 +42,10 @@ export class NftRepository {
   }
 
 
+  async getAllNfts(){
+    const nfts = await this.nftEntityRepository.find();
+  }
+
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     this.nftEntityRepository.save([{

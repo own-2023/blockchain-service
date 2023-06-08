@@ -27,12 +27,14 @@ export class NftService {
     return price;
   }
 
-  async setPrice(nft: NftEntity, newPrice: number) {
+  async putOnSale(nft: NftEntity, newPrice: number) {
     if (nft.isMinted === true) {
       await this.nftRepository.setPrice(nft, newPrice);
+      await this.nftRepository.setOnSale(nft);
       await this.contract.methods.setPrice(nft.mintedNftEntity.token_id, newPrice).send();
     }
     else {
+      await this.nftRepository.setOnSale(nft);
       await this.nftRepository.setPrice(nft, newPrice);
     }
     return newPrice;
@@ -86,16 +88,12 @@ export class NftService {
   }
 
   async getAllNfts() {
-    return await this.contract.methods.getAllImageMetadatas().call();
+
+    
+    //return await this.contract.methods.getAllImageMetadatas().call();
   }
 
   async getAllNftsOwnedBy(ownerId: string) {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
-
-  async putOnSale(nft: NftEntity, price: number) {
-    await this.nftRepository.setOnSale(nft);
-    await this.nftRepository.setPrice(nft, price);
-  }
-
 }

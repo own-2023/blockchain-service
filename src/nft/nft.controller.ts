@@ -35,17 +35,6 @@ export class NftController {
     return { price, tokenId };
   }
 
-
-  @Put(':nftId/set-price/:newPrice')
-  @HttpCode(200)
-  async setPrice(@Param() params: any) {
-    const nft = await this.nftService.findOneById(params.nft_id);
-    const newPrice = await this.nftService.setPrice(nft, params.newPrice);
-
-    return { price: newPrice };
-  }
-
-
   @ApiOperation({ summary: "buy an nft" })
   @ApiResponse({
     status: 200,
@@ -54,7 +43,6 @@ export class NftController {
   @Post('buy/:tokenId')
   async buy(@Param('tokenId') tokenId: string): Promise<BuyNftResponseDto> {
     const price = await this.nftService.getPrice(tokenId);
-
     return { price, tokenId };
   }
 
@@ -67,6 +55,7 @@ export class NftController {
   })
   @Get('get-all-nfts')
   async getAllNfts() {
+    console.log('entered');
     return await this.nftService.getAllNfts();
   }
 
@@ -135,9 +124,13 @@ export class NftController {
 
   }
 
-  @Post(':nftId/set-price/:newPrice')
-  async putOnSale(@Param() params: any){
-    const nft = await this.nftService.findOneById(params.nftId)
-    
+
+  @Put(':nftId/put-on-sale/:newPrice')
+  @HttpCode(200)
+  async putNftOnSale(@Param() params: any) {
+    const nft = await this.nftService.findOneById(params.nft_id);
+    const newPrice = await this.nftService.putOnSale(nft, params.newPrice);
+    return { price: newPrice, isOnSale: true };
   }
 }
+
