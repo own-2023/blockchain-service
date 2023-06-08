@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MintNftDto } from './dto/mint-nft.dto';
-import { UpdateNftDto } from './dto/update-nft.dto';
 import { Contract } from 'web3-eth-contract';
 import { IpfsService } from 'src/ipfs/ipfs.service';
 import Web3 from 'web3';
@@ -29,15 +28,12 @@ export class NftService {
   }
 
   async setPrice(nft: NftEntity, newPrice: number) {
-    let price = 0;
-    
-
     if (nft.isMinted === true) {
-      await this.nftRepository.setPrice(nft.nft_id, newPrice);
+      await this.nftRepository.setPrice(nft, newPrice);
       await this.contract.methods.setPrice(nft.mintedNftEntity.token_id, newPrice).send();
     }
     else {
-      await this.nftRepository.setPrice(nft.nft_id, newPrice);
+      await this.nftRepository.setPrice(nft, newPrice);
     }
     return newPrice;
   }
@@ -72,7 +68,7 @@ export class NftService {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
-  async findOneById(nftId: string){
+  async findOneById(nftId: string) {
     let nft: NftEntity;
     try {
       nft = await this.nftRepository.findOneNftById(nftId);
@@ -84,13 +80,10 @@ export class NftService {
     return nft;
   }
 
-
   async buyNft(buyerId: number, tokenId: string): Promise<any> {
     const nftPrice = this.getPrice(tokenId);
     this.contract.methods.buy(tokenId).send({ from: buyerId, value: nftPrice });
   }
-
-
 
   async getAllNfts() {
     return await this.contract.methods.getAllImageMetadatas().call();
@@ -98,6 +91,11 @@ export class NftService {
 
   async getAllNftsOwnedBy(ownerId: string) {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
+  }
+
+  async putOnSale(nft: NftEntity, price: number) {
+    await this.nftRepository.setOnSale(nft);
+    await this.nftRepository.setPrice(nft, price);
   }
 
 }

@@ -9,6 +9,7 @@ import { PutNftOnSaleDto } from './dto/put-nft-on-sale.dto';
 import { BuyNftResponseDto } from './dto/buy-nft.response.dto';
 import { GetUserNftsResponseDto } from './dto/get-user-nfts.response.dto';
 import axios from 'axios';
+import { GetOneNftByIdDto } from './dto/get-one-nft-by-id.dto';
 
 @ApiTags('nfts')
 @Controller('nfts')
@@ -40,7 +41,7 @@ export class NftController {
   async setPrice(@Param() params: any) {
     const nft = await this.nftService.findOneById(params.nft_id);
     const newPrice = await this.nftService.setPrice(nft, params.newPrice);
-    
+
     return { price: newPrice };
   }
 
@@ -114,7 +115,7 @@ export class NftController {
     status: 200,
   })
   @HttpCode(200)
-  async getOneNftById(@Param() params: any) {
+  async getOneNftById(@Param() params: any, getOneNftByIdDto: GetOneNftByIdDto) {
     const nft = await this.nftService.findOneById(params.nftId)
     let response;
     try {
@@ -128,8 +129,15 @@ export class NftController {
       nftPrice: nft.price,
       nftOwner: username,
       nftName: nft.ipfsEntity.nft_name,
-      nftUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`
+      nftUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
+      nftIsOnSale: nft.isOnSale,
     }
 
+  }
+
+  @Post(':nftId/set-price/:newPrice')
+  async putOnSale(@Param() params: any){
+    const nft = await this.nftService.findOneById(params.nftId)
+    
   }
 }

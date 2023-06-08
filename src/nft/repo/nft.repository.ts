@@ -16,15 +16,11 @@ export class NftRepository {
 
   constructor(
     @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
-    @InjectRepository(NftEntity) private nftEntity: Repository<NftEntity>,
+    @InjectRepository(NftEntity) private nftEntityRepository: Repository<NftEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
-
-
-
-
   async getAllOwnedTokens(userId: string) {
-    const userNfts = await this.nftEntity.findOne({
+    const userNfts = await this.nftEntityRepository.findOne({
       where: {
         owner_id: userId,
         mintedNftEntity: {
@@ -48,7 +44,7 @@ export class NftRepository {
 
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    this.nftEntity.save([{
+    this.nftEntityRepository.save([{
       owner_id: lazyMintNftDto.ownerId,
       price: lazyMintNftDto.price,
       created_at: new Date(),
@@ -69,7 +65,7 @@ export class NftRepository {
   }
 
   async getAllNftsOwnedBy(ownerId: string) {
-    return await this.nftEntity.find({
+    return await this.nftEntityRepository.find({
       where: {
         owner_id: ownerId,
       },
@@ -79,9 +75,10 @@ export class NftRepository {
     })
   }
 
-  async setPrice(nftId: string, newPrice: number) {
+  async setPrice(nft: NftEntity, newPrice: number) {
+    nft.price = newPrice;
     try {
-      this.nftEntity.update({ nft_id: nftId }, { price: newPrice });
+      this.nftEntityRepository.save(nft);
     }
     catch (err) {
       console.log(err);
@@ -91,7 +88,7 @@ export class NftRepository {
 
   async findOneNftById(nftId: string) {
     try {
-      return await this.nftEntity.findOne({
+      return await this.nftEntityRepository.findOne({
         relations: {
           ipfsEntity: true,
           mintedNftEntity: true,
@@ -111,7 +108,7 @@ export class NftRepository {
   async setOnSale(nft: NftEntity) {
     nft.isOnSale = true;
     try {
-      await this.nftEntity.save(nft);
+      await this.nftEntityRepository.save(nft);
     }
     catch (err) {
       console.log(err);
