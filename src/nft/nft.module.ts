@@ -14,11 +14,12 @@ import { IpfsModule } from 'src/ipfs/ipfs.module';
 import { NftEntity } from './entities/nft.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
+import { EthereumModule } from 'src/ethereum/ethereum.module';
 
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ MintedNftEntity, NftEntity, IpfsEntity]), IpfsModule, AuthModule],
+  imports: [TypeOrmModule.forFeature([ MintedNftEntity, NftEntity, IpfsEntity]), IpfsModule, AuthModule, EthereumModule],
   controllers: [NftController],
   providers: [NftService, {
     provide: 'CONTRACT',

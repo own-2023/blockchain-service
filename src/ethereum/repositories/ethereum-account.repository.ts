@@ -19,18 +19,23 @@ export class EthereumAccountRepository {
         })
     }
 
-    async getAccount(userId: string) {
-        return await this.ethereumAccountRepository.findOne({
-            where: {
-                user_id: userId
-            }
     async getAccount(user_id: string) {
         const userAccount = await this.ethereumAccountRepository.findOneBy({
             user_id: user_id
-          });
+        });
 
-          return userAccount;
+        return userAccount;
 
     }
-     
+
+    async findAccountBy(userId: string) {
+        try {
+            const wallet = await this.ethereumAccountRepository.findOne({ where: { user_id: userId } })
+            return wallet;
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
 }

@@ -16,6 +16,7 @@ export class IpfsService {
     const filename = file.originalname;
     const cid = result.cid.toString();
     await this.ipfsRepository.save(ownerId, cid, filename, nftName);
+    
   }
 
 

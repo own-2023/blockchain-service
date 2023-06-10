@@ -22,4 +22,8 @@ export class EthereumService {
         const balance = await this.web3.eth.getBalance(address);
         return { balance };
     }
+
+    async getAccountBy(userId: string){
+        return await this.ethereumAccountRepository.findAccountBy(userId);
+    }
 }

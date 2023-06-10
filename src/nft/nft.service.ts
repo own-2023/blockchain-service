@@ -6,7 +6,7 @@ import Web3 from 'web3';
 import { NftRepository } from './repo/nft.repository';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 import { NftEntity } from './entities/nft.entity';
-
+import { EthereumService } from 'src/ethereum/ethereum.service';
 
 @Injectable()
 export class NftService {
@@ -15,6 +15,7 @@ export class NftService {
     @Inject('WEB3') private readonly web3: Web3,
     private readonly nftRepository: NftRepository,
     private readonly ipfsService: IpfsService,
+    private readonly ethereumService: EthereumService,
   ) { }
 
   async getPrice(tokenId: string) {
@@ -40,30 +41,40 @@ export class NftService {
     return newPrice;
   }
 
-  async mint(mintNftDto: MintNftDto) {
-    let transactionHash: any = -1;
-    // const gasPrice = await this.web3.eth.getGasPrice();
-    // const gasLimit = 21000;
+  async buy(nftId: string, buyerId: string,) {
+    const nft = await this.nftRepository.findOneNftById(nftId);
+    const account = await this.ethereumService.getAccountBy(buyerId);
+    if (!nft.isMinted) {
+
+      const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
+      const mintTransactionSigned = await this.signTransaction(mintTransaction, account.private_key, account.address);
+      try {
+        await this.web3.eth.sendSignedTransaction(mintTransactionSigned.rawTransaction);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+    const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
+    const buyTransactionSigned = await this.signTransaction(buyTransaction, account.private_key, account.address);
     try {
-      transactionHash = await this.contract.methods.mint(mintNftDto.imageUrl, mintNftDto.name, mintNftDto.price)
-        .send({ from: mintNftDto.from, gas: 4712388 });
-      this.nftRepository.insertNft(mintNftDto, transactionHash['events']['Transfer']['returnValues']);
+      await this.web3.eth.sendSignedTransaction(buyTransactionSigned.rawTransaction);
     }
-    catch (e) {
-      console.log(e.message);
+    catch (err) {
+      console.log(err);
     }
-    return transactionHash;
   }
 
-  async buy(tokenId: number) {
-    try {
-      return await this.contract.methods.buy(tokenId).send();
-    }
-    catch (e) {
-      console.log(e.message);
-    }
-
-    return;
+  async signTransaction(transaction: any, privateKey: string, fromAddress: string) {
+    const gasPrice = await transaction.estimateGas({ from: fromAddress });
+    const options = {
+      to: transaction._parent._address,
+      data: transaction.encodeABI(),
+      gas: gasPrice,
+      gasPrice: gasPrice,
+    };
+    const signed = await this.web3.eth.accounts.signTransaction(options, privateKey);
+    return signed;
   }
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
@@ -82,10 +93,7 @@ export class NftService {
     return nft;
   }
 
-  async buyNft(buyerId: number, tokenId: string): Promise<any> {
-    const nftPrice = this.getPrice(tokenId);
-    this.contract.methods.buy(tokenId).send({ from: buyerId, value: nftPrice });
-  }
+
 
   async getAllNfts() {
     let nfts: NftEntity[] = [];

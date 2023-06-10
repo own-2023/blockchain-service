@@ -1,13 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req, Put } from '@nestjs/common';
 import { NftService } from './nft.service';
-import { MintNftDto } from './dto/mint-nft.dto';
-import { SetPriceNftDto } from './dto/set-price-nft.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
-import { PutNftOnSaleDto } from './dto/put-nft-on-sale.dto';
-import { BuyNftResponseDto } from './dto/buy-nft.response.dto';
 import { GetUserNftsResponseDto } from './dto/get-user-nfts.response.dto';
+import { BuyNftDto } from './dto/buy-nft.dto';
 import axios from 'axios';
 import { GetOneNftByIdDto } from './dto/get-one-nft-by-id.dto';
 
@@ -15,17 +12,6 @@ import { GetOneNftByIdDto } from './dto/get-one-nft-by-id.dto';
 @Controller('nfts')
 export class NftController {
   constructor(private readonly nftService: NftService) { }
-
-
-  @ApiOperation({ summary: 'mints an nft' })
-  @ApiResponse({
-    status: 201,
-    description: 'nft minted succesfully'
-  })
-  @Post('mint')
-  async mint(@Body() mintNftDto: MintNftDto) {
-    return await this.nftService.mint(mintNftDto);
-  }
 
 
   @Get('get-price/:tokenId')
@@ -38,12 +24,12 @@ export class NftController {
   @ApiOperation({ summary: "buy an nft" })
   @ApiResponse({
     status: 200,
-    type: BuyNftResponseDto
   })
-  @Post('buy/:tokenId')
-  async buy(@Param('tokenId') tokenId: string): Promise<BuyNftResponseDto> {
-    const price = await this.nftService.getPrice(tokenId);
-    return { price, tokenId };
+  @UseGuards(AuthGuard)
+  @Post('buy/:nftId')
+  async buy(@Param('nftId') nftId: string, @Body() buyNftDto: BuyNftDto) {
+    this.nftService.buy(nftId, buyNftDto.buyerId);
+
   }
 
 
@@ -57,7 +43,7 @@ export class NftController {
   async getAllNfts() {
     const nfts = await this.nftService.getAllNfts();
     return nfts.map((nft) => {
-      return{
+      return {
         nftName: nft.ipfsEntity.nft_name,
         nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
         nftPrice: nft.price,
@@ -97,10 +83,6 @@ export class NftController {
   }
 
 
-  @Post('buy')
-  async buyNft(buyerId: number, nftToken: string) {
-    this.nftService.buyNft(buyerId, nftToken);
-  }
 
 
   @ApiOperation({ summary: 'lazy mint an nft' })

@@ -16,7 +16,7 @@ export class NftRepository {
 
   constructor(
     @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
-    @InjectRepository(NftEntity) private nftEntity: Repository<NftEntity>,
+    @InjectRepository(NftEntity) private nftEntityRepository: Repository<NftEntity>,
     @InjectRepository(IpfsEntity) private ipfsEntity: Repository<IpfsEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
@@ -46,6 +46,16 @@ export class NftRepository {
   async getAllNftsOnSale() {
     const nfts = await this.nftEntityRepository.find({ relations: { ipfsEntity: true, mintedNftEntity: true }, where: { isOnSale: true } });
     return nfts;
+  }
+
+  async setPrice(nft: NftEntity, newPrice: number) {
+    nft.price = newPrice;
+    try {
+      this.nftEntityRepository.save(nft);
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
 
 
@@ -125,5 +135,9 @@ export class NftRepository {
     catch (err) {
       console.log(err);
     }
+  }
+
+  async getPrivateKey(userId: string){
+    
   }
 }
