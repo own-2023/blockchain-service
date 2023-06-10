@@ -19,14 +19,6 @@ export class EthereumAccountRepository {
         })
     }
 
-    async getAccount(user_id: string) {
-        const userAccount = await this.ethereumAccountRepository.findOneBy({
-            user_id: user_id
-        });
-
-        return userAccount;
-
-    }
 
     async findAccountBy(userId: string) {
         try {
@@ -38,4 +30,27 @@ export class EthereumAccountRepository {
         }
     }
 
+
+    async getAccount(userId: string) {
+        let account: EthereumAccountEntity = null;
+        account = await this.ethereumAccountRepository.findOne({
+            where: {
+                user_id: userId
+            }
+        });
+        return account;
+    }
+
+    async updateBalance(userId: string, balance: number) {
+        let account: EthereumAccountEntity = await this.getAccount(userId);
+
+        if (account) {
+            account.balance = balance;
+            account = await this.ethereumAccountRepository.save(account);
+            return true
+        }
+        return false;
+    }
+
+     
 }

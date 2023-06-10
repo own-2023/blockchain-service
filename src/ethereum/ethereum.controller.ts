@@ -30,5 +30,12 @@ export class EthereumController {
         return balance;
     }
 
+    @Post('withdraw')
+    @UseGuards(AuthGuard)
+    async withdraw(@Req() request: Request){
+        console.log(request);
+        
+    }
+
 
 }
