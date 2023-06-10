@@ -10,6 +10,7 @@ import { BuyNftResponseDto } from './dto/buy-nft.response.dto';
 import { GetUserNftsResponseDto } from './dto/get-user-nfts.response.dto';
 import axios from 'axios';
 import { GetOneNftByIdDto } from './dto/get-one-nft-by-id.dto';
+import { AuthHomePageGuard } from 'src/auth/auth.home-page.guard';
 
 @ApiTags('nfts')
 @Controller('nfts')
@@ -54,7 +55,9 @@ export class NftController {
     description: 'all nfts fetched'
   })
   @Get('get-all-nfts')
-  async getAllNfts() {
+  @UseGuards(AuthHomePageGuard)
+  async getAllNfts(@Req() request: Request) {
+    const ownerId: string = request['user'].user_id;
     const nfts = await this.nftService.getAllNfts();
     return nfts.map((nft) => {
       return{
