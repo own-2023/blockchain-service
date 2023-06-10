@@ -24,8 +24,12 @@ export class EthereumAccountRepository {
             where: {
                 user_id: userId
             }
+    async getAccount(user_id: string) {
+        const userAccount = await this.ethereumAccountRepository.findOneBy({
+            user_id: user_id
           });
 
+          return userAccount;
 
     }
      

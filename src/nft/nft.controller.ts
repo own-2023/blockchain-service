@@ -66,6 +66,14 @@ export class NftController {
     })
   }
 
+  @Get('get-user-lazy-minted-nfts')
+  @UseGuards(AuthGuard)
+  async getUserLazyMintedNfts(@Req() request: Request) {
+    const userId: string = request['user'].user_id;
+    const result = await this.nftService.getUserLazyMintedNfts(userId);
+    return result;
+  }
+
 
   @ApiOperation({ summary: "get a user's all nfts" })
   @ApiResponse({
@@ -139,5 +147,7 @@ export class NftController {
     const newPrice = await this.nftService.putOnSale(nft, params.newPrice);
     return { price: newPrice, isOnSale: true };
   }
+
+
 }
 

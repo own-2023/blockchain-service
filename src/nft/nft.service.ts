@@ -110,4 +110,15 @@ export class NftService {
   async getAllNftsOwnedBy(ownerId: string) {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
+
+  async findOneByNft(nftId: string) {
+    const nft = await this.nftRepository.findOneNftById(nftId);
+    return nft
+  }
+
+  async getUserLazyMintedNfts(userId: string) {
+    const nft = await this.nftRepository.getAllLazyMintedByUserId(userId);
+    return nft;
+
+  }
 }

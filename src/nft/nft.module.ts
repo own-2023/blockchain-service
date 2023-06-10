@@ -13,26 +13,52 @@ import { create } from 'ipfs-http-client'
 import { IpfsModule } from 'src/ipfs/ipfs.module';
 import { NftEntity } from './entities/nft.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ MintedNftEntity, NftEntity]), IpfsModule, AuthModule],
+  imports: [TypeOrmModule.forFeature([ MintedNftEntity, NftEntity, IpfsEntity]), IpfsModule, AuthModule],
   controllers: [NftController],
   providers: [NftService, {
     provide: 'CONTRACT',
-    useFactory: () => {
-
+    useFactory: async () => {
       const configPath = path.resolve(__dirname, '..', '..', process.env.SMART_CONTRACT_PATH);
       const configFile = fs.readFileSync(configPath, 'utf-8');
-
-
+  
       const contractAbi: AbiItem[] = JSON.parse(configFile).abi as AbiItem[];
-      const contractAddress: string = process.env.SMART_CONTRACT_ADDRESS;
+      const contractBytecode: string = JSON.parse(configFile).bytecode;
+      const constructorArguments: any[] = []; // Define the constructor arguments here
 
+      const publicKey = process.env.ACCOUNT_ADDRESS // Replace with the desired public key
+      const privateKey = process.env.ACCOUNT_PRIVATE_KEY // Replace with the desired private key
+
+  
       const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_HTTP_PROVIDER_URL));
+      const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+      account.address = publicKey;
+  
+      const deployTransaction = new web3.eth.Contract(contractAbi).deploy({
+        data: contractBytecode,
+        arguments: constructorArguments,
+      });
+  
+      const gas = await deployTransaction.estimateGas();
+      const gasPrice = await web3.eth.getGasPrice();
+  
+      const signedTransaction = await web3.eth.accounts.signTransaction(
+        {
+          data: deployTransaction.encodeABI(),
+          gas,
+          gasPrice,
+        },
+        account.privateKey
+      );
+  
+      const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+      const contractAddress = receipt.contractAddress;
+  
       const contract = new web3.eth.Contract(contractAbi, contractAddress);
-
       return contract;
     },
   }, {
