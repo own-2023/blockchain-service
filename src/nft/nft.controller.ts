@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Req, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, UseGuards, Req, Put } from '@nestjs/common';
 import { NftService } from './nft.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
@@ -26,13 +26,11 @@ export class NftController {
     status: 200,
   })
   @UseGuards(AuthGuard)
+  @HttpCode(200)
   @Post('buy/:nftId')
   async buy(@Param('nftId') nftId: string, @Body() buyNftDto: BuyNftDto) {
-    this.nftService.buy(nftId, buyNftDto.buyerId);
-
+    await this.nftService.buy(nftId, buyNftDto.buyerId);
   }
-
-
 
   @ApiOperation({ summary: "get all nfts on marketplace" })
   @ApiResponse({
@@ -42,6 +40,7 @@ export class NftController {
   @Get('get-all-nfts')
   async getAllNfts() {
     const nfts = await this.nftService.getAllNfts();
+    console.log(nfts);
     return nfts.map((nft) => {
       return {
         nftName: nft.ipfsEntity.nft_name,
@@ -129,7 +128,5 @@ export class NftController {
     const newPrice = await this.nftService.putOnSale(nft, params.newPrice);
     return { price: newPrice, isOnSale: true };
   }
-
-
 }
 

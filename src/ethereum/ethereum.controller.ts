@@ -33,8 +33,7 @@ export class EthereumController {
     @Post('withdraw')
     @UseGuards(AuthGuard)
     async withdraw(@Req() request: Request){
-        console.log(request);
-        
+        console.log(request); 
     }
 
 

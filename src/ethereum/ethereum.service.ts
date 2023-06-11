@@ -15,19 +15,18 @@ export class EthereumService {
     }
 
     async getAccount(userId: string) {
-        const response = await this.ethereumAccountRepository.getAccount(userId);
-        return { privateKey: response.private_key, address: response.address };
+        const account = await this.ethereumAccountRepository.getAccount(userId);
+        return { privateKey: account.private_key, address: account.address };
     }
 
     async getBalance(address: string) {
         const balance = await this.web3.eth.getBalance(address);
-        return { balance };
+        return { balance: this.web3.utils.fromWei(balance, 'ether') };
     }
 
     async withdraw(userId:string, amount:string, recipientAddress:string) {
         try {
         const account: EthereumAccountEntity= await this.ethereumAccountRepository.getAccount(userId);
-        const nonce = await this.web3.eth.getTransactionCount(account.address);
         const gasPriceWei: string = await this.web3.eth.getGasPrice();
 
         // Create a transaction object
@@ -37,16 +36,14 @@ export class EthereumService {
         value: this.web3.utils.toWei(amount, 'ether'), // Amount of Ether to send
         gas: 21000, // Fixed gas limit for ETH transfer
         gasPrice: gasPriceWei,
-        nonce: nonce,
+        nonce: await this.web3.eth.getTransactionCount(account.address),
       };
 
     // Sign the transaction
       const signedTx = await this.web3.eth.accounts.signTransaction(txObject, account.private_key);
 
       // Send the signed transaction
-      const receipt = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
-      console.log('Receipt:', receipt); 
+      const receipt = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);; 
     }
     catch (error) {
         console.error('Error:', error);

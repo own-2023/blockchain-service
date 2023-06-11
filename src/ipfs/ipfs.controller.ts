@@ -10,7 +10,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 @Controller('ipfs')
 export class IpfsController {
   constructor(private readonly ipfsService: IpfsService) { }
-  @ApiOperation({summary: 'mints an nft'})
+  @ApiOperation({summary: 'lazy mints an nft'})
   @ApiResponse({
     status: 201,
     type: 'file, user'
