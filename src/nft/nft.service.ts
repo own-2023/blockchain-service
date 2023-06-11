@@ -45,10 +45,12 @@ export class NftService {
     const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
+    console.log(await this.web3.eth.getTransactionCount(buyerAccount.address));
+    console.log(await this.web3.eth.getTransactionCount(sellerAccount.address));
     if (!nft.isMinted) {
 
       const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
-      const mintTransactionSigned = await this.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
+      const mintTransactionSigned = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
       try {
         await this.web3.eth.sendSignedTransaction(mintTransactionSigned.rawTransaction);
@@ -60,7 +62,7 @@ export class NftService {
     else {
       try {
         const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
-        const buyTransactionSigned = await this.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
+        const buyTransactionSigned = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
         await this.web3.eth.sendSignedTransaction(buyTransactionSigned.rawTransaction);
       }
       catch (err) {
@@ -70,19 +72,7 @@ export class NftService {
     }
   }
 
-  async signTransaction(transaction: any, privateKey: string, fromAddress: string) {
-    const gasPrice = await transaction.estimateGas({ from: fromAddress });
-    console.log(await this.web3.eth.getTransactionCount(fromAddress))
-    const options = {
-      from: fromAddress,
-      to: transaction._parent._address,
-      data: transaction.encodeABI(),
-      gas: gasPrice,
-      nonce: 7
-    };
-    const signed = await this.web3.eth.accounts.signTransaction(options, privateKey);
-    return signed;
-  }
+  
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
@@ -106,7 +96,6 @@ export class NftService {
     let nfts: NftEntity[] = [];
     try {
       const mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
-      console.log(mintedNfts);
       nfts = nfts.concat(mintedNfts);
     }
     catch (err) {

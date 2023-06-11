@@ -19,6 +19,17 @@ export class EthereumAccountRepository {
         })
     }
 
+    async incrementNonceOf(address: string) {
+        try {
+            const wallet = await this.ethereumAccountRepository.findOneBy({ address });
+            wallet.nonce += 1;
+            await this.ethereumAccountRepository.save(wallet);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
 
     async findAccountBy(userId: string) {
         try {
@@ -52,5 +63,5 @@ export class EthereumAccountRepository {
         return false;
     }
 
-     
+
 }
