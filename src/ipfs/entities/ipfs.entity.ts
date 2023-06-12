@@ -23,7 +23,7 @@ export class IpfsEntity {
     @Column()
     created_at: Date;
 
-    @Column()
+    @Column({default: 0})
     price: string;
 
     @OneToMany((type) => NftEntity, lazyNftEntity => lazyNftEntity.ipfsEntity, {})

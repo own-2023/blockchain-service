@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MintNftDto } from './dto/mint-nft.dto';
 import { Contract } from 'web3-eth-contract';
 import { IpfsService } from 'src/ipfs/ipfs.service';
@@ -45,34 +45,28 @@ export class NftService {
     const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
-    console.log(await this.web3.eth.getTransactionCount(buyerAccount.address));
-    console.log(await this.web3.eth.getTransactionCount(sellerAccount.address));
+    console.log(buyerAccount);
+    console.log(sellerAccount);
+    let signedTransaction: any;
     if (!nft.isMinted) {
-
       const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
-      const mintTransactionSigned = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
-      await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
-      try {
-        await this.web3.eth.sendSignedTransaction(mintTransactionSigned.rawTransaction);
-      }
-      catch (err) {
-        console.log(err);
-      }
+      signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
     }
     else {
-      try {
-        const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
-        const buyTransactionSigned = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
-        await this.web3.eth.sendSignedTransaction(buyTransactionSigned.rawTransaction);
-      }
-      catch (err) {
-        console.log('Hata burada');
-        console.log(err);
-      }
+      const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
+      signedTransaction = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
+    }
+    try {
+      await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+      await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
+    }
+    catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException()
     }
   }
 
-  
+
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);

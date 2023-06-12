@@ -60,24 +60,31 @@ export class NftRepository {
 
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    this.nftEntityRepository.save([{
+    try{
+      await this.nftEntityRepository.save([{
       owner_id: lazyMintNftDto.ownerId,
       price: lazyMintNftDto.price,
       created_at: new Date(),
       ipfsEntity: {
         id: lazyMintNftDto.ipfsId,
       }
-    }])
+    }])}
+    catch(err){
+      console.log(err);
+    }
   }
 
   async insertNft(mintNftDto: MintNftDto, result: Result) {
-    await this.mintedNftEntity.save([{
+    try{await this.mintedNftEntity.save([{
       name: mintNftDto.name,
       token_id: result.tokenId,
       price: mintNftDto.price,
       created_at: new Date(),
       user_id: mintNftDto.userId
-    }]);
+    }]);}
+    catch(err){
+      console.log(err)
+    }
   }
 
   async getAllNftsOwnedBy(ownerId: string) {
@@ -135,9 +142,5 @@ export class NftRepository {
     catch (err) {
       console.log(err);
     }
-  }
-
-  async getPrivateKey(userId: string){
-    
   }
 }

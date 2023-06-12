@@ -40,7 +40,6 @@ export class NftController {
   @Get('get-all-nfts')
   async getAllNfts() {
     const nfts = await this.nftService.getAllNfts();
-    console.log(nfts);
     return nfts.map((nft) => {
       return {
         nftName: nft.ipfsEntity.nft_name,

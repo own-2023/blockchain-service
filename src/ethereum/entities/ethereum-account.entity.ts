@@ -15,7 +15,7 @@ export class EthereumAccountEntity{
     @Column()
     private_key: string;
 
-    @Column()
+    @Column({default: 0})
     nonce: number;
 
     @Column({default: 0})
