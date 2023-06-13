@@ -31,6 +31,6 @@ export class NftEntity {
     @JoinColumn({ name: 'ipfs_id' })
     ipfsEntity: IpfsEntity;
 
-    @Column()
+    @Column({nullable: true, default: null})
     token_id: string;
 }

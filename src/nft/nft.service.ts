@@ -55,7 +55,7 @@ export class NftService {
       await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
       await this.nftRepository.setOnSale(nft, false);
-      await this.nftRepository
+      await this.nftRepository.setOwnerId(nft, buyerId);
     }
     catch (err) {
       console.log(err);
