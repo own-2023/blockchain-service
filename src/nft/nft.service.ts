@@ -32,7 +32,7 @@ export class NftService {
     if (nft.isMinted === true) {
       await this.nftRepository.setPrice(nft, newPrice);
       await this.nftRepository.setOnSale(nft);
-      await this.contract.methods.setPrice(nft.mintedNftEntity.token_id, newPrice).send();
+      await this.contract.methods.setPrice(nft.token_id, newPrice).send();
     }
     else {
       await this.nftRepository.setOnSale(nft);
@@ -51,7 +51,7 @@ export class NftService {
       signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
     }
     else {
-      const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
+      const buyTransaction = this.contract.methods.buy(nft.token_id);
       signedTransaction = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
     }
     try {
