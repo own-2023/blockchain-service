@@ -35,7 +35,7 @@ export class NftRepository {
       this.nftEntityRepository.save(nft);
     }
     catch(err){
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException();
     }
   }
@@ -59,7 +59,7 @@ export class NftRepository {
       this.nftEntityRepository.save(nft);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -74,7 +74,7 @@ export class NftRepository {
       await this.nftEntityRepository.save(nft);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -84,7 +84,7 @@ export class NftRepository {
       this.nftEntityRepository.save(nft);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException();
     }
   }
@@ -94,7 +94,7 @@ export class NftRepository {
 
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -104,7 +104,7 @@ export class NftRepository {
       this.nftEntityRepository.save(nft);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException();
     }
   }
@@ -152,7 +152,7 @@ export class NftRepository {
       })
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException();
     }
   }
@@ -163,7 +163,7 @@ export class NftRepository {
       await this.nftEntityRepository.save(nft);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 }

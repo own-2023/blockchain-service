@@ -18,7 +18,7 @@ export class IpfsRepository {
     ipfs.nft_name = nftName;
     try{await this.ipfsRepository.save(ipfs)}
     catch(err){
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException();
     }
   }

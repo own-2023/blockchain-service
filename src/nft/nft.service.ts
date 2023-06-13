@@ -29,7 +29,7 @@ export class NftService {
   }
 
   async putOnSale(nft: NftEntity, newPrice: number) {
-    console.log(nft);
+    console.error(nft);
     await this.nftRepository.setOnSale(nft, true);
     await this.nftRepository.setPrice(nft, newPrice);
     if (nft.isMinted === true) {
@@ -61,7 +61,7 @@ export class NftService {
       await this.nftRepository.setOwnerId(nft, buyerId);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
       throw new InternalServerErrorException()
     }
   }
@@ -78,7 +78,7 @@ export class NftService {
       nft = await this.nftRepository.findOneNftById(nftId);
     }
     catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     return nft;
@@ -94,7 +94,7 @@ export class NftService {
       nfts = nfts.concat(mintedNfts);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
 
     try {
@@ -102,7 +102,7 @@ export class NftService {
       nfts = nfts.concat(lazyNfts);
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
     return nfts;
   }

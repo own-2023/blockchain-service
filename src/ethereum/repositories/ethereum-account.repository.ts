@@ -26,7 +26,7 @@ export class EthereumAccountRepository {
             await this.ethereumAccountRepository.save(wallet);
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -36,7 +36,7 @@ export class EthereumAccountRepository {
             return wallet;
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

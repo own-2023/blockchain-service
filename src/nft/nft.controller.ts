@@ -106,7 +106,7 @@ export class NftController {
       response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: nft.owner_id } });
     }
     catch (err) {
-      console.log(err);
+      console.error(err);
     }
     const username = response.data['username'];
     return {

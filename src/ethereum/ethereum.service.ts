@@ -71,7 +71,7 @@ export class EthereumService {
             await this.ethereumAccountRepository.incrementNonceOf(fromAddress);
         }
         catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
