@@ -29,6 +29,17 @@ export class NftRepository {
     return userNfts;
   }
 
+  async setOwnerId(nft: NftEntity,ownerId: string){
+    nft.owner_id = ownerId;
+    try{
+      this.nftEntityRepository.save(nft);
+    }
+    catch(err){
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getOwnedNftByTokenId(token_id: string) {
     const userNfts = await this.nftEntityRepository.findOneBy({
       token_id: token_id
@@ -148,8 +159,8 @@ export class NftRepository {
     }
   }
 
-  async setOnSale(nft: NftEntity) {
-    nft.isOnSale = true;
+  async setOnSale(nft: NftEntity, isOnSale: boolean) {
+    nft.isOnSale = isOnSale;
     try {
       await this.nftEntityRepository.save(nft);
     }

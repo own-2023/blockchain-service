@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
-import { MintedNftEntity } from './minted-nft.entity';
 
 @Entity({
     name: 'nfts',

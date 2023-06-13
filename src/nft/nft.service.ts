@@ -29,15 +29,12 @@ export class NftService {
   }
 
   async putOnSale(nft: NftEntity, newPrice: number) {
+    await this.nftRepository.setOnSale(nft, true);
+    await this.nftRepository.setPrice(nft, newPrice);
     if (nft.isMinted === true) {
-      await this.nftRepository.setPrice(nft, newPrice);
-      await this.nftRepository.setOnSale(nft);
       await this.contract.methods.setPrice(nft.token_id, newPrice).send();
     }
-    else {
-      await this.nftRepository.setOnSale(nft);
-      await this.nftRepository.setPrice(nft, newPrice);
-    }
+
     return newPrice;
   }
 
@@ -57,6 +54,8 @@ export class NftService {
     try {
       await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
+      await this.nftRepository.setOnSale(nft, false);
+      await this.nftRepository
     }
     catch (err) {
       console.log(err);
