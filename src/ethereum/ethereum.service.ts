@@ -40,8 +40,6 @@ export class EthereumService {
                 nonce: await this.web3.eth.getTransactionCount(account.address),
             };
 
-
-
             // Sign the transaction
             const signedTx = await this.web3.eth.accounts.signTransaction(txObject, account.private_key);
 
@@ -53,6 +51,8 @@ export class EthereumService {
         }
     }
 
+    
+
     async signTransaction(transaction: any, privateKey: string, fromAddress: string) {
         const gasPrice = await transaction.estimateGas({ from: fromAddress });
         const options = {
@@ -62,6 +62,7 @@ export class EthereumService {
             gas: gasPrice,
         };
         const signed = await this.web3.eth.accounts.signTransaction(options, privateKey);
+        console.log(signed);
         return signed;
     }
 

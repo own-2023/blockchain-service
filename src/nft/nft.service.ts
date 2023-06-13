@@ -29,7 +29,6 @@ export class NftService {
   }
 
   async putOnSale(nft: NftEntity, newPrice: number) {
-    console.error(nft);
     await this.nftRepository.setOnSale(nft, true);
     await this.nftRepository.setPrice(nft, newPrice);
     if (nft.isMinted === true) {
@@ -45,16 +44,14 @@ export class NftService {
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
     let signedTransaction: any;
     if (!nft.isMinted) {
-      const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
-      signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
-
+      await this.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price, buyerAccount.address);
     }
     else {
       const buyTransaction = this.contract.methods.buy(nft.token_id);
       signedTransaction = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
+      await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
     }
     try {
-      await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
       nft.isMinted = true;
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
       await this.nftRepository.setOnSale(nft, false);
@@ -84,13 +81,26 @@ export class NftService {
     return nft;
   }
 
+  async mint(imageUrl: string, name: string, price: number, from: string) {
+    let transactionHash: any = -1;
+    // const gasPrice = await this.web3.eth.getGasPrice();
+    // const gasLimit = 21000;
+    try {
+      transactionHash = await this.contract.methods.mint(imageUrl, name, price)
+        .send({ from, gas: 4712388 });
+    }
+    catch (e) {
+      console.log(e.message);
+    }
+    return transactionHash;
+  }
+
 
 
   async getAllNfts() {
     let nfts: NftEntity[] = [];
     try {
       const mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
-      console.log(mintedNfts);
       nfts = nfts.concat(mintedNfts);
     }
     catch (err) {
