@@ -2,7 +2,6 @@ import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
-import { MintedNftEntity } from '../entities/minted-nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
 import { Result } from 'ethers';
@@ -14,7 +13,6 @@ import { NftEntity } from '../entities/nft.entity';
 export class NftRepository {
 
   constructor(
-    @InjectRepository(MintedNftEntity) private mintedNftRepository: Repository<MintedNftEntity>,
     @InjectRepository(NftEntity) private nftEntityRepository: Repository<NftEntity>,
     @InjectRepository(IpfsEntity) private ipfsEntityRepository: Repository<IpfsEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
@@ -23,9 +21,6 @@ export class NftRepository {
     const userNfts = await this.nftEntityRepository.findOne({
       where: {
         owner_id: userId,
-        mintedNftEntity: {
-
-        }
       },
       relations: {
         ipfsEntity: true,
@@ -35,7 +30,7 @@ export class NftRepository {
   }
 
   async getOwnedNftByTokenId(token_id: string) {
-    const userNfts = await this.mintedNftRepository.findOneBy({
+    const userNfts = await this.nftEntityRepository.findOneBy({
       token_id: token_id
     });
     return userNfts;
@@ -43,7 +38,7 @@ export class NftRepository {
 
 
   async getAllNftsOnSale() {
-    const nfts = await this.nftEntityRepository.find({ relations: { ipfsEntity: true, mintedNftEntity: true }, where: { isOnSale: true } });
+    const nfts = await this.nftEntityRepository.find({ relations: { ipfsEntity: true }, where: { isOnSale: true } });
     return nfts;
   }
 
@@ -66,7 +61,7 @@ export class NftRepository {
         created_at: new Date(),
         ipfsEntity: {
           id: lazyMintNftDto.ipfsId,
-        }
+        },
       }])
     }
     catch (err) {
@@ -94,10 +89,10 @@ export class NftRepository {
     }
   }
 
-  async insertMintedNft(tokenId: string, nftId: string) {
+  async insertMintedNft(nft: NftEntity, tokenId: string) {
     try {
-
-      this.mintedNftRepository.insert({nft_id: nftId, token_id: tokenId});
+      nft.token_id = tokenId;
+      this.nftEntityRepository.save(nft);
     }
     catch (err) {
       console.log(err);
@@ -140,7 +135,6 @@ export class NftRepository {
       return await this.nftEntityRepository.findOne({
         relations: {
           ipfsEntity: true,
-          mintedNftEntity: true,
         },
         where: {
           nft_id: nftId

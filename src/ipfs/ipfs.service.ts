@@ -19,7 +19,6 @@ export class IpfsService {
     
   }
 
-
   async isIpfsFileExists(cid: string) {
     const result = await this.ipfsRepository.findByCid(cid);
     if(result === null){

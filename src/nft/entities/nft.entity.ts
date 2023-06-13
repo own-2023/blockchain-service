@@ -28,14 +28,10 @@ export class NftEntity {
     @Column('uuid')
     ipfs_id: string;
 
-    @Column('uuid', {default: null})
-    minted_nft_id: string;
-
     @ManyToOne(() => IpfsEntity, ipfs => ipfs.lazyNftEntity, {})
     @JoinColumn({ name: 'ipfs_id' })
     ipfsEntity: IpfsEntity;
 
-    @OneToOne(() => MintedNftEntity, mintedNftEntity => mintedNftEntity.lazyNftEntity, { nullable: true, cascade:true })
-    @JoinColumn({ name: 'nft_id' })
-    mintedNftEntity: MintedNftEntity;
+    @Column()
+    token_id: string;
 }
