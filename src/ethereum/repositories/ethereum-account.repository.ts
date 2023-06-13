@@ -30,7 +30,6 @@ export class EthereumAccountRepository {
         }
     }
 
-
     async findAccountBy(userId: string) {
         try {
             const wallet = await this.ethereumAccountRepository.findOne({ where: { user_id: userId } })
@@ -41,16 +40,12 @@ export class EthereumAccountRepository {
         }
     }
 
-
     async getAccount(userId: string) {
-        let account: EthereumAccountEntity = null;
-        account = await this.ethereumAccountRepository.findOne({
+        const account = await this.ethereumAccountRepository.findOne({
             where: {
                 user_id: userId
             }
         });
         return account;
     }
-
-
 }

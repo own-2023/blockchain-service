@@ -60,7 +60,7 @@ export class NftRepository {
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     try {
-      await this.nftEntityRepository.save([{
+      await this.nftEntityRepository.insert([{
         owner_id: lazyMintNftDto.ownerId,
         price: lazyMintNftDto.price,
         created_at: new Date(),
@@ -96,10 +96,8 @@ export class NftRepository {
 
   async insertMintedNft(tokenId: string, nftId: string) {
     try {
-      const mintedNft = new MintedNftEntity();
-      mintedNft.nft_id = nftId;
-      mintedNft.token_id = tokenId;
-      this.mintedNftRepository.save(mintedNft);
+
+      this.mintedNftRepository.insert({nft_id: nftId, token_id: tokenId});
     }
     catch (err) {
       console.log(err);

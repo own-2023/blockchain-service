@@ -35,7 +35,7 @@ export class NftEntity {
     @JoinColumn({ name: 'ipfs_id' })
     ipfsEntity: IpfsEntity;
 
-    @OneToOne(() => MintedNftEntity, mintedNftEntity => mintedNftEntity.lazyNftEntity, { nullable: true })
-    @JoinColumn({ name: 'minted_nft_id' })
+    @OneToOne(() => MintedNftEntity, mintedNftEntity => mintedNftEntity.lazyNftEntity, { nullable: true, cascade:true })
+    @JoinColumn({ name: 'nft_id' })
     mintedNftEntity: MintedNftEntity;
 }
