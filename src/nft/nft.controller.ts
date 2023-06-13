@@ -39,15 +39,8 @@ export class NftController {
   })
   @Get('get-all-nfts')
   async getAllNfts() {
-    const nfts = await this.nftService.getAllNfts();
-    return nfts.map((nft) => {
-      return {
-        nftName: nft.ipfsEntity.nft_name,
-        nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
-        nftPrice: nft.price,
-        nftId: nft.nft_id,
-      }
-    })
+    return await this.nftService.getAllNfts();
+    
   }
 
   @Get('get-user-lazy-minted-nfts')

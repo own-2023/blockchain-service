@@ -56,8 +56,8 @@ dotenv.config();
       );
   
       const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-      const contractAddress = receipt.contractAddress;
-      
+      const contractAddress = process.env.SMART_CONTRACT_ADDRESS;
+
   
       const contract = new web3.eth.Contract(contractAbi, contractAddress);
       return contract;
