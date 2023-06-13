@@ -123,7 +123,9 @@ export class NftController {
   @Put(':nftId/put-on-sale/:newPrice')
   @HttpCode(200)
   async putNftOnSale(@Param() params: any) {
-    const nft = await this.nftService.findOneById(params.nft_id);
+    const nft = await this.nftService.findOneById(params.nftId);
+    console.log(params.nftId);
+
     const newPrice = await this.nftService.putOnSale(nft, params.newPrice);
     return { price: newPrice, isOnSale: true };
   }

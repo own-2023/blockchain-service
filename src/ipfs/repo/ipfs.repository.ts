@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm';
 import { IpfsEntity } from '../entities/ipfs.entity';
@@ -11,7 +11,16 @@ export class IpfsRepository {
     @InjectRepository(IpfsEntity) private ipfsRepository: Repository<IpfsEntity>) { }
 
   async save(ownerId: string, cid: string, filename: string, nftName: string) {
-    await this.ipfsRepository.save({ cid, filename, creator_id: ownerId, created_at: new Date(), nft_name: nftName })
+    const ipfs = new IpfsEntity();
+    ipfs.cid = cid;
+    ipfs.creator_id =  ownerId;
+    ipfs.created_at = new Date();
+    ipfs.nft_name = nftName;
+    try{await this.ipfsRepository.save(ipfs)}
+    catch(err){
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
   }
 
   async findByCid(cid: string) {

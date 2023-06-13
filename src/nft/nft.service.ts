@@ -29,6 +29,7 @@ export class NftService {
   }
 
   async putOnSale(nft: NftEntity, newPrice: number) {
+    console.log(nft);
     await this.nftRepository.setOnSale(nft, true);
     await this.nftRepository.setPrice(nft, newPrice);
     if (nft.isMinted === true) {
@@ -46,6 +47,7 @@ export class NftService {
     if (!nft.isMinted) {
       const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
       signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
+
     }
     else {
       const buyTransaction = this.contract.methods.buy(nft.token_id);
@@ -53,6 +55,7 @@ export class NftService {
     }
     try {
       await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+      nft.isMinted = true;
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
       await this.nftRepository.setOnSale(nft, false);
       await this.nftRepository.setOwnerId(nft, buyerId);
