@@ -52,16 +52,5 @@ export class EthereumAccountRepository {
         return account;
     }
 
-    async updateBalance(userId: string, balance: number) {
-        let account: EthereumAccountEntity = await this.getAccount(userId);
-
-        if (account) {
-            account.balance = balance;
-            account = await this.ethereumAccountRepository.save(account);
-            return true
-        }
-        return false;
-    }
-
 
 }

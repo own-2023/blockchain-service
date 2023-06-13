@@ -18,6 +18,4 @@ export class EthereumAccountEntity{
     @Column({default: 0})
     nonce: number;
 
-    @Column({default: 0})
-    balance: number;
 }

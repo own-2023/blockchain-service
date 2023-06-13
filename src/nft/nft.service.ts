@@ -49,7 +49,6 @@ export class NftService {
     if (!nft.isMinted) {
       const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
       signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
-      
     }
     else {
       const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
@@ -89,6 +88,7 @@ export class NftService {
     let nfts: NftEntity[] = [];
     try {
       const mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
+      console.log(mintedNfts);
       nfts = nfts.concat(mintedNfts);
     }
     catch (err) {
