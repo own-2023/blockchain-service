@@ -2,7 +2,6 @@ import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm'
 import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 import { Repository } from 'typeorm';
-
 import { MintedNftEntity } from '../entities/minted-nft.entity';
 import { MintNftDto } from '../dto/mint-nft.dto';
 import { IPFSHTTPClient } from 'ipfs-http-client';
@@ -15,9 +14,9 @@ import { NftEntity } from '../entities/nft.entity';
 export class NftRepository {
 
   constructor(
-    @InjectRepository(MintedNftEntity) private mintedNftEntity: Repository<MintedNftEntity>,
+    @InjectRepository(MintedNftEntity) private mintedNftRepository: Repository<MintedNftEntity>,
     @InjectRepository(NftEntity) private nftEntityRepository: Repository<NftEntity>,
-    @InjectRepository(IpfsEntity) private ipfsEntity: Repository<IpfsEntity>,
+    @InjectRepository(IpfsEntity) private ipfsEntityRepository: Repository<IpfsEntity>,
     @Inject('IPFS') private readonly ipfs: IPFSHTTPClient) { }
 
   async getAllOwnedTokens(userId: string) {
@@ -36,7 +35,7 @@ export class NftRepository {
   }
 
   async getOwnedNftByTokenId(token_id: string) {
-    const userNfts = await this.mintedNftEntity.findOneBy({
+    const userNfts = await this.mintedNftRepository.findOneBy({
       token_id: token_id
     });
     return userNfts;
@@ -60,32 +59,55 @@ export class NftRepository {
 
 
   async insertLazyMintNft(lazyMintNftDto: LazyMintNftDto) {
-    try{
+    try {
       await this.nftEntityRepository.save([{
-      owner_id: lazyMintNftDto.ownerId,
-      price: lazyMintNftDto.price,
-      created_at: new Date(),
-      ipfsEntity: {
-        id: lazyMintNftDto.ipfsId,
-      }
-    }])}
-    catch(err){
+        owner_id: lazyMintNftDto.ownerId,
+        price: lazyMintNftDto.price,
+        created_at: new Date(),
+        ipfsEntity: {
+          id: lazyMintNftDto.ipfsId,
+        }
+      }])
+    }
+    catch (err) {
       console.log(err);
     }
   }
 
-  async insertNft(mintNftDto: MintNftDto, result: Result) {
-    try{await this.mintedNftEntity.save([{
-      name: mintNftDto.name,
-      token_id: result.tokenId,
-      price: mintNftDto.price,
-      created_at: new Date(),
-      user_id: mintNftDto.userId
-    }]);}
-    catch(err){
-      console.log(err)
+  async setMinted(nft: NftEntity, isMinted: boolean) {
+    try {
+      nft.isMinted = isMinted;
+      this.nftEntityRepository.save(nft);
+    }
+    catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException();
     }
   }
+
+  async setTokenId(nft: NftEntity, tokenId: string) {
+    try {
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  async insertMintedNft(tokenId: string, nftId: string) {
+    try {
+      const mintedNft = new MintedNftEntity();
+      mintedNft.nft_id = nftId;
+      mintedNft.token_id = tokenId;
+      this.mintedNftRepository.save(mintedNft);
+    }
+    catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
+  }
+
+
 
   async getAllNftsOwnedBy(ownerId: string) {
     return await this.nftEntityRepository.find({
@@ -99,10 +121,10 @@ export class NftRepository {
   }
 
   async getAllLazyMintedByUserId(userId: string) {
-    let nfts:IpfsEntity[] = [];
-    nfts =  await  this.ipfsEntity.find({ where: { creator_id: userId } });
+    let nfts: IpfsEntity[] = [];
+    nfts = await this.ipfsEntityRepository.find({ where: { creator_id: userId } });
 
-    const result: UserLazyMintNftDto[] = nfts.map( nft => {
+    const result: UserLazyMintNftDto[] = nfts.map(nft => {
       const userLazyMintNftDTO = new UserLazyMintNftDto();
       userLazyMintNftDTO.id = nft.id;
       userLazyMintNftDTO.creator_id = nft.creator_id;

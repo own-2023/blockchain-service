@@ -45,12 +45,11 @@ export class NftService {
     const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
-    console.log(buyerAccount);
-    console.log(sellerAccount);
     let signedTransaction: any;
     if (!nft.isMinted) {
       const mintTransaction = this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price);
       signedTransaction = await this.ethereumService.signTransaction(mintTransaction, buyerAccount.private_key, buyerAccount.address);
+      
     }
     else {
       const buyTransaction = this.contract.methods.buy(nft.mintedNftEntity.token_id);
