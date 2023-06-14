@@ -13,7 +13,6 @@ import { GetOneNftByIdDto } from './dto/get-one-nft-by-id.dto';
 export class NftController {
   constructor(private readonly nftService: NftService) { }
 
-
   @Get('get-price/:tokenId')
   @HttpCode(200)
   async getPrice(@Param('tokenId') tokenId: string): Promise<{ price: number, tokenId: string }> {
@@ -22,9 +21,7 @@ export class NftController {
   }
 
   @ApiOperation({ summary: "buy an nft" })
-  @ApiResponse({
-    status: 200,
-  })
+  @ApiResponse({ status: 200 })
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Post('buy/:nftId')
@@ -40,14 +37,7 @@ export class NftController {
   @Get('get-all-nfts')
   async getAllNftsOnSale() {
     const nfts = await this.nftService.getAllNftsOnSale();
-    return nfts.map((nft) => {
-      return {
-        nftPrice: nft.price,
-        nftName: nft.ipfsEntity.nft_name,
-        nftImageUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
-        nftId: nft.nft_id
-      }
-    })
+    return nfts.map((nft) => this.mapNftToResponseDto(nft));
   }
 
   @Get('get-user-lazy-minted-nfts')
@@ -70,20 +60,11 @@ export class NftController {
     const ownerId: string = request['user'].user_id;
     const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
 
-    return nfts.map((nft) => {
-      return {
-        nftPrice: nft.price,
-        nftName: nft.ipfsEntity.nft_name,
-        nftImageUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
-        nftId: nft.nft_id
-      }
-    })
+    return nfts.map((nft) => this.mapNftToResponseDto(nft));
   }
 
   @ApiOperation({ summary: 'lazy mint an nft' })
-  @ApiResponse({
-    status: 201,
-  })
+  @ApiResponse({ status: 201 })
   @Post('lazy-mint')
   @HttpCode(201)
   async lazyMintNft(@Body() LazyMintNftDto: LazyMintNftDto) {
@@ -92,33 +73,12 @@ export class NftController {
 
   @Get(':nftId')
   @ApiOperation({ summary: "get a nft by id" })
-  @ApiResponse({
-    status: 200,
-  })
+  @ApiResponse({ status: 200 })
   @HttpCode(200)
   async getOneNftById(@Param() params: any, getOneNftByIdDto: GetOneNftByIdDto) {
     const nft = await this.nftService.findOneById(params.nftId);
-    let response;
-    try {
-      response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: nft.owner_id } });
-    }
-    catch (err) {
-      console.error(err);
-    }
-    const username = response.data['username'];
-    return {
-      nftPrice: nft.price,
-      nftOwner: username,
-      nftName: nft.ipfsEntity.nft_name,
-      nftUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
-      isNftOnSale: nft.isOnSale,
-      isMinted: nft.isMinted,
-    }
-
-  }
-
-  getNftViewUrl(cid: string) {
-    return `http://127.0.0.1:8080/ipfs/${cid}`;
+    const username = await this.getUsername(nft.owner_id);
+    return this.mapNftWithOwnerToResponseDto(nft, username);
   }
 
   @Put(':nftId/set-price/:newPrice')
@@ -135,5 +95,38 @@ export class NftController {
     const nft = await this.nftService.findOneById(params.nftId);
     await this.nftService.putOnSale(nft);
   }
-}
 
+  private async getUsername(userId: string): Promise<string> {
+    try {
+      const response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: userId } });
+      return response.data.username;
+    } catch (error) {
+      console.error(error);
+      return '';
+    }
+  }
+
+  private mapNftToResponseDto(nft: any): any {
+    return {
+      nftPrice: nft.price,
+      nftName: nft.ipfsEntity.nft_name,
+      nftImageUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
+      nftId: nft.nft_id
+    };
+  }
+
+  private mapNftWithOwnerToResponseDto(nft: any, owner: string): any {
+    return {
+      nftPrice: nft.price,
+      nftOwner: owner,
+      nftName: nft.ipfsEntity.nft_name,
+      nftUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
+      isNftOnSale: nft.isOnSale,
+      isMinted: nft.isMinted,
+    };
+  }
+
+  private getNftViewUrl(cid: string): string {
+    return `http://127.0.0.1:8080/ipfs/${cid}`;
+  }
+}
