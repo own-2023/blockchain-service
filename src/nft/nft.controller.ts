@@ -59,7 +59,7 @@ export class NftController {
   })
   @Get('get-user-nfts')
   @UseGuards(AuthGuard)
-  async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
+  async getNftsOwned(@Req() request: Request) {
     const ownerId: string = request['user'].user_id;
     return await this.nftService.getAllNftsOwnedBy(ownerId);
   }
@@ -100,7 +100,7 @@ export class NftController {
 
   }
 
-  getNftViewUrl(cid: string){
+  getNftViewUrl(cid: string) {
     return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
 

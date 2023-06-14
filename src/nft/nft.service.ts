@@ -76,35 +76,14 @@ export class NftService {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
-  async findOneById(nftId: string){
+  async findOneById(nftId: string) {
     return await this.nftRepository.findOneNftById(nftId);
-  }
-
-
-  async mint(imageUrl: string, name: string, price: number, from: string) {
-    let transactionHash: any = -1;
-    // const gasPrice = await this.web3.eth.getGasPrice();
-    // const gasLimit = 21000;
-    try {
-      transactionHash = await this.contract.methods.mint(imageUrl, name, price)
-        .send({ from, gas: 4712388 });
-    }
-    catch (e) {
-      console.log(e.message);
-    }
-    console.log(transactionHash);
-    return transactionHash;
   }
 
 
 
   async getAllNftsOnSale() {
-    try {
-      return await this.nftRepository.getAllNftsOnSale();
-    }
-    catch (err) {
-      console.error(err);
-    }
+    return await this.nftRepository.getAllNftsOnSale();
   }
 
 
@@ -112,12 +91,12 @@ export class NftService {
     return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
 
-  getNftViewUrl(cid: string){
+  getNftViewUrl(cid: string) {
     return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
 
   async getAllNftsOwnedBy(ownerId: string) {
-    return await this.getAllNftsOwnedBy(ownerId);
+    return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
 
   async findOneByNft(nftId: string) {
@@ -128,6 +107,5 @@ export class NftService {
   async getUserLazyMintedNfts(userId: string) {
     const nft = await this.nftRepository.getAllLazyMintedByUserId(userId);
     return nft;
-
   }
 }

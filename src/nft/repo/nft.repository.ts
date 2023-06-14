@@ -129,14 +129,18 @@ export class NftRepository {
 
 
   async getAllNftsOwnedBy(ownerId: string) {
-    return await this.nftEntityRepository.find({
+    try{return await this.nftEntityRepository.find({
       where: {
         owner_id: ownerId,
       },
       relations: {
         ipfsEntity: true,
       }
-    })
+    })}
+    catch(err){
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
   }
 
   async getAllLazyMintedByUserId(userId: string) {
