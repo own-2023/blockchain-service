@@ -49,8 +49,12 @@ export class NftRepository {
 
 
   async getAllNftsOnSale() {
-    const nfts = await this.nftEntityRepository.find({ relations: { ipfsEntity: true }, where: { isOnSale: true } });
-    return nfts;
+    try{return await this.nftEntityRepository.find({ relations: { ipfsEntity: true }, where: { isOnSale: true } });}
+    catch(err){
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
+
   }
 
   async setPrice(nft: NftEntity, newPrice: number) {
@@ -60,6 +64,7 @@ export class NftRepository {
     }
     catch (err) {
       console.error(err);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -149,7 +154,7 @@ export class NftRepository {
     return result;
   }
 
-  async findOneLazyNftById(nftId: string) {
+  async findOneNftById(nftId: string) {
     try {
       return await this.nftEntityRepository.findOne({
         relations: {

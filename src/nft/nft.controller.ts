@@ -40,7 +40,7 @@ export class NftController {
   @Get('get-all-nfts')
   async getAllNfts() {
     return await this.nftService.getAllNfts();
-    
+
   }
 
   @Get('get-user-lazy-minted-nfts')
@@ -98,10 +98,14 @@ export class NftController {
       nftPrice: nft.price,
       nftOwner: username,
       nftName: nft.ipfsEntity.nft_name,
-      nftUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
+      nftUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
       nftIsOnSale: nft.isOnSale,
     }
 
+  }
+
+  getNftViewUrl(cid: string){
+    return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
 
 

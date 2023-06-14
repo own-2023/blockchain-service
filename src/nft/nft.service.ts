@@ -7,9 +7,10 @@ import { NftRepository } from './repo/nft.repository';
 import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 import { NftEntity } from './entities/nft.entity';
 import { EthereumService } from 'src/ethereum/ethereum.service';
+import { IpfsEntity } from 'src/ipfs/entities/ipfs.entity';
 
+type Nft = { nftName: string, nftImageUrl: string, nftPrice: number, nftId: string, isMinted: boolean }
 
-type Nfts = { nftName: string, nftImageUrl: string, nftPrice: number, nftId: string, isMinted: boolean }
 
 @Injectable()
 export class NftService {
@@ -37,12 +38,11 @@ export class NftService {
     if (nft.isMinted === true) {
       await this.contract.methods.setPrice(nft.token_id, newPrice).send();
     }
-
     return newPrice;
   }
 
   async buy(nftId: string, buyerId: string,) {
-    const nft = await this.nftRepository.findOneLazyNftById(nftId);
+    const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
     if (!nft.isMinted) {
@@ -76,26 +76,10 @@ export class NftService {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
   }
 
-  async findOneById(nftId: string) {
-    let nft = await this.nftRepository.findOneLazyNftById(nftId);
-    if (nft.isMinted) {
-      nft = await this.findOneMintedNftByTokenId(nft.token_id);
-    }
-    return nft;
+  async findOneById(nftId: string){
+    return await this.nftRepository.findOneNftById(nftId);
   }
 
-  async findOneMintedNftByTokenId(tokenId: string) {
-
-    let mintedNft = await this.contract.methods.getImageMetadata.call();
-    mintedNft = {
-      nftName: mintedNft.name,
-      nftImageUrl: mintedNft.imageUrl,
-      nftPrice: mintedNft.price,
-      isMinted: true,
-      nftId: 0,
-    }
-    return mintedNft;
-  }
 
   async mint(imageUrl: string, name: string, price: number, from: string) {
     let transactionHash: any = -1;
@@ -115,7 +99,7 @@ export class NftService {
 
 
   async getAllNfts() {
-    let nfts: Nfts[] = [];
+    let nfts: Nft[] = [];
     try {
       let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
       mintedNfts = mintedNfts.map((nft) => {
@@ -124,7 +108,7 @@ export class NftService {
           nftImageUrl: nft.imageUrl,
           nftPrice: nft.price,
           isMinted: true,
-          nftId: 0,
+          nftId: '',
         }
       })
       nfts = nfts.concat(mintedNfts);
@@ -153,55 +137,20 @@ export class NftService {
   }
 
 
-  async getAllLazyNftsOnSaleOwnedBy(ownerId: string) {
-    try {
-      const lazyNfts = await this.nftRepository.getAllNftsOwnedBy(ownerId);
-      let lazyNftsTransformed = lazyNfts.map((nft) => {
-        return {
-          nftName: nft.ipfsEntity.nft_name,
-          nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
-          nftPrice: nft.price,
-          nftId: nft.nft_id,
-          isMinted: false,
-        }
-      })
-      return lazyNftsTransformed;
-    }
-    catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException();
-    }
+  async getAllNftsOnSaleOwnedBy(ownerId: string) {
+    return await this.nftRepository.getAllNftsOwnedBy(ownerId);
   }
 
-  async getAllMintedNftsOnSaleOwnedBy(ownedId: string) {
-    try {
-      let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
-      mintedNfts = mintedNfts.map((nft) => {
-        return {
-          nftName: mintedNfts.name,
-          nftImageUrl: mintedNfts.imageUrl,
-          nftPrice: nft.price,
-          isMinted: true,
-          nftId: 0,
-        }
-      })
-      return mintedNfts;
-    }
-    catch (err) {
-      console.error(err);
-      throw new InternalServerErrorException();
-    }
+  getNftViewUrl(cid: string){
+    return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
 
   async getAllNftsOwnedBy(ownerId: string) {
-    let nfts: Nfts[] = [];
-    nfts = nfts.concat(await this.getAllLazyNftsOnSaleOwnedBy(ownerId));
-    nfts = nfts.concat(await this.getAllMintedNftsOnSaleOwnedBy(ownerId));
-    return nfts;
+    return await this.getAllNftsOwnedBy(ownerId);
   }
 
   async findOneByNft(nftId: string) {
-    const nft = await this.nftRepository.findOneLazyNftById(nftId);
+    const nft = await this.nftRepository.findOneNftById(nftId);
     return nft
   }
 
