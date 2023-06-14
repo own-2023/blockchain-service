@@ -44,6 +44,7 @@ export class NftService {
       }
     }
     await this.nftRepository.setPrice(nft, newPrice);
+    return newPrice;
   }
   async putOnSale(nft: NftEntity) {
     await this.nftRepository.setOnSale(nft, true);
@@ -53,10 +54,12 @@ export class NftService {
     const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
+    console.log(buyerAccount);
     if (!nft.isMinted) {
       try {
-        nft.token_id = await this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price)
-          .call({ from: buyerAccount.address, gas: 4712388 });
+        const transaction = await this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price)
+          .send({ from: buyerAccount.address, gas: 4712388 });
+        nft.token_id = transaction.events.Transfer.returnValues.tokenId;
         nft.isMinted = true;
       }
       catch (err) {
@@ -65,7 +68,10 @@ export class NftService {
       }
     }
     else {
-      await this.contract.methods.buy(nft.token_id).send({ from: buyerAccount.address, gas: 4712388, value: await this.ethereumService.getBalanceWei(buyerAccount.address) });
+      const newPrice = await this.contract.methods.getPrice(nft.token_id).call();
+      await this.nftRepository.setPrice(nft, newPrice);
+      console.log(newPrice);
+      await this.contract.methods.buy(nft.token_id).send({ from: buyerAccount.address, gas: 4712388, value:  newPrice + 4800000});
     }
     try {
       nft.owner_id = buyerId;
@@ -108,7 +114,7 @@ export class NftService {
 
   async findOneByNft(nftId: string) {
     const nft = await this.nftRepository.findOneNftById(nftId);
-    
+
     return nft
   }
 

@@ -112,6 +112,7 @@ export class NftController {
       nftName: nft.ipfsEntity.nft_name,
       nftUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
       isNftOnSale: nft.isOnSale,
+      isMinted: nft.isMinted,
     }
 
   }
@@ -131,8 +132,8 @@ export class NftController {
   @Put(':nftId/put-on-sale')
   @HttpCode(200)
   async setPrice(@Param() params: any) {
-    const nft = await this.nftService.findOneById(params.nft_id);
-    this.nftService.putOnSale(nft);
+    const nft = await this.nftService.findOneById(params.nftId);
+    await this.nftService.putOnSale(nft);
   }
 }
 

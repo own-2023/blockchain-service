@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
 import Web3 from 'web3';
 import { EthereumAccountRepository } from './repositories/ethereum-account.repository';
 import { EthereumAccountEntity } from './entities/ethereum-account.entity';
@@ -85,7 +85,11 @@ export class EthereumService {
     }
 
     async getAccountBy(userId: string) {
-        return await this.ethereumAccountRepository.findAccountBy(userId);
+        try{return await this.ethereumAccountRepository.findAccountBy(userId);}
+        catch(err){
+            console.error(err);
+            throw new InternalServerErrorException();
+        }
     }
 
 }
