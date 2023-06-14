@@ -29,12 +29,12 @@ export class NftRepository {
     return userNfts;
   }
 
-  async setOwnerId(nft: NftEntity,ownerId: string){
+  async setOwnerId(nft: NftEntity, ownerId: string) {
     nft.owner_id = ownerId;
-    try{
+    try {
       this.nftEntityRepository.save(nft);
     }
-    catch(err){
+    catch (err) {
       console.error(err);
       throw new InternalServerErrorException();
     }
@@ -49,8 +49,10 @@ export class NftRepository {
 
 
   async getAllNftsOnSale() {
-    try{return await this.nftEntityRepository.find({ relations: { ipfsEntity: true }, where: { isOnSale: true } });}
-    catch(err){
+    try {
+      return await this.nftEntityRepository.find({ relations: { ipfsEntity: true }, where: { isOnSale: true } });
+    }
+    catch (err) {
       console.error(err);
       throw new InternalServerErrorException();
     }
@@ -114,11 +116,11 @@ export class NftRepository {
     }
   }
 
-  async save(nft: NftEntity){
-    try{
+  async save(nft: NftEntity) {
+    try {
       this.nftEntityRepository.save(nft)
     }
-    catch(err){
+    catch (err) {
       console.error(err);
       throw new InternalServerErrorException();
     }

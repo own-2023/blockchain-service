@@ -98,42 +98,13 @@ export class NftService {
 
 
 
-  async getAllNfts() {
-    let nfts: Nft[] = [];
+  async getAllNftsOnSale() {
     try {
-      let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
-      mintedNfts = mintedNfts.map((nft) => {
-        return {
-          nftName: nft.name,
-          nftImageUrl: nft.imageUrl,
-          nftPrice: nft.price,
-          isMinted: true,
-          nftId: '',
-        }
-      })
-      nfts = nfts.concat(mintedNfts);
+      return await this.nftRepository.getAllNftsOnSale();
     }
     catch (err) {
       console.error(err);
     }
-
-    try {
-      const lazyNfts = await this.nftRepository.getAllNftsOnSale();
-      let lazyNftsTransformed = lazyNfts.map((nft) => {
-        return {
-          nftName: nft.ipfsEntity.nft_name,
-          nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
-          nftPrice: nft.price,
-          nftId: nft.nft_id,
-          isMinted: false,
-        }
-      })
-      nfts = nfts.concat(lazyNftsTransformed);
-    }
-    catch (err) {
-      console.error(err);
-    }
-    return nfts;
   }
 
 

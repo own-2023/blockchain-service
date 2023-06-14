@@ -32,14 +32,14 @@ export class NftController {
     await this.nftService.buy(nftId, buyNftDto.buyerId);
   }
 
-  @ApiOperation({ summary: "get all nfts on marketplace" })
+  @ApiOperation({ summary: "get all nfts on sale on marketplace" })
   @ApiResponse({
     status: 200,
     description: 'all nfts fetched'
   })
   @Get('get-all-nfts')
-  async getAllNfts() {
-    return await this.nftService.getAllNfts();
+  async getAllNftsOnSale() {
+    return await this.nftService.getAllNftsOnSale();
 
   }
 
@@ -50,7 +50,6 @@ export class NftController {
     const result = await this.nftService.getUserLazyMintedNfts(userId);
     return result;
   }
-
 
   @ApiOperation({ summary: "get a user's all nfts" })
   @ApiResponse({
@@ -64,9 +63,6 @@ export class NftController {
     const ownerId: string = request['user'].user_id;
     return await this.nftService.getAllNftsOwnedBy(ownerId);
   }
-
-
-
 
   @ApiOperation({ summary: 'lazy mint an nft' })
   @ApiResponse({
@@ -107,7 +103,6 @@ export class NftController {
   getNftViewUrl(cid: string){
     return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
-
 
   @Put(':nftId/put-on-sale/:newPrice')
   @HttpCode(200)
