@@ -42,7 +42,7 @@ export class NftService {
   }
 
   async buy(nftId: string, buyerId: string,) {
-    const nft = await this.nftRepository.findOneNftById(nftId);
+    const nft = await this.nftRepository.findOneLazyNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
     if (!nft.isMinted) {
@@ -77,15 +77,24 @@ export class NftService {
   }
 
   async findOneById(nftId: string) {
-    let nft: NftEntity;
-    try {
-      nft = await this.nftRepository.findOneNftById(nftId);
+    let nft = await this.nftRepository.findOneLazyNftById(nftId);
+    if (nft.isMinted) {
+      nft = await this.findOneMintedNftByTokenId(nft.token_id);
     }
-    catch (error) {
-      console.error(error);
-    }
-
     return nft;
+  }
+
+  async findOneMintedNftByTokenId(tokenId: string) {
+
+    let mintedNft = await this.contract.methods.getImageMetadata.call();
+    mintedNft = {
+      nftName: mintedNft.name,
+      nftImageUrl: mintedNft.imageUrl,
+      nftPrice: mintedNft.price,
+      isMinted: true,
+      nftId: 0,
+    }
+    return mintedNft;
   }
 
   async mint(imageUrl: string, name: string, price: number, from: string) {
@@ -111,8 +120,8 @@ export class NftService {
       let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
       mintedNfts = mintedNfts.map((nft) => {
         return {
-          nftName: mintedNfts.name,
-          nftImageUrl: mintedNfts.imageUrl,
+          nftName: nft.name,
+          nftImageUrl: nft.imageUrl,
           nftPrice: nft.price,
           isMinted: true,
           nftId: 0,
@@ -192,7 +201,7 @@ export class NftService {
   }
 
   async findOneByNft(nftId: string) {
-    const nft = await this.nftRepository.findOneNftById(nftId);
+    const nft = await this.nftRepository.findOneLazyNftById(nftId);
     return nft
   }
 

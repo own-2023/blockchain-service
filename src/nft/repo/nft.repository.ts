@@ -149,7 +149,7 @@ export class NftRepository {
     return result;
   }
 
-  async findOneNftById(nftId: string) {
+  async findOneLazyNftById(nftId: string) {
     try {
       return await this.nftEntityRepository.findOne({
         relations: {
