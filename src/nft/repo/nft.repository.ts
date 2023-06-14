@@ -109,6 +109,16 @@ export class NftRepository {
     }
   }
 
+  async save(nft: NftEntity){
+    try{
+      this.nftEntityRepository.save(nft)
+    }
+    catch(err){
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
+  }
+
 
 
   async getAllNftsOwnedBy(ownerId: string) {

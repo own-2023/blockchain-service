@@ -8,6 +8,9 @@ import { LazyMintNftDto } from './dto/lazy-mint-nft.dto';
 import { NftEntity } from './entities/nft.entity';
 import { EthereumService } from 'src/ethereum/ethereum.service';
 
+
+type Nfts = { nftName: string, nftImageUrl: string, nftPrice: number, nftId: string, isMinted: boolean }
+
 @Injectable()
 export class NftService {
 
@@ -42,34 +45,32 @@ export class NftService {
     const nft = await this.nftRepository.findOneNftById(nftId);
     const buyerAccount = await this.ethereumService.getAccountBy(buyerId);
     const sellerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
-
     if (!nft.isMinted) {
       try {
-        const txHash = await this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price)
-          .send({ from: buyerAccount.address, gas: 4712388 });
-        console.log(txHash);
+        nft.token_id = await this.contract.methods.mint(`http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`, nft.ipfsEntity.nft_name, nft.price)
+          .call({ from: buyerAccount.address, gas: 4712388 });
+        nft.isMinted = true;
       }
       catch (err) {
         console.log(err);
         throw new InternalServerErrorException();
       }
     }
-    nft.isMinted = true;
-    const buyTransaction = this.contract.methods.buy(nft.token_id);
+    else {
+      await this.contract.methods.buy(nft.token_id).send({ from: buyerAccount.address, gas: 4712388, value: await this.ethereumService.getBalanceWei(buyerAccount.address) });
+    }
+
     try {
-      const signedTransaction = await this.ethereumService.signTransaction(buyTransaction, buyerAccount.private_key, buyerAccount.address);
+      nft.owner_id = buyerId;
+      nft.isOnSale = false;
       await this.ethereumService.withdraw(buyerId, nft.price.toString(), sellerAccount.address);
-      await this.web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-      await this.nftRepository.setOnSale(nft, false);
-      await this.nftRepository.setOwnerId(nft, buyerId);
+      await this.nftRepository.save(nft);
     }
     catch (err) {
       console.log(err);
       throw new InternalServerErrorException();
     }
   }
-
-
 
   async lazyMintNft(lazyMintNftDto: LazyMintNftDto) {
     await this.nftRepository.insertLazyMintNft(lazyMintNftDto);
@@ -105,7 +106,7 @@ export class NftService {
 
 
   async getAllNfts() {
-    let nfts: { nftName: string, nftImageUrl: string, nftPrice: number, nftId: string }[] = [];
+    let nfts: Nfts[] = [];
     try {
       let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
       mintedNfts = mintedNfts.map((nft) => {
@@ -113,6 +114,7 @@ export class NftService {
           nftName: mintedNfts.name,
           nftImageUrl: mintedNfts.imageUrl,
           nftPrice: nft.price,
+          isMinted: true,
           nftId: 0,
         }
       })
@@ -130,6 +132,7 @@ export class NftService {
           nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
           nftPrice: nft.price,
           nftId: nft.nft_id,
+          isMinted: false,
         }
       })
       nfts = nfts.concat(lazyNftsTransformed);
@@ -140,8 +143,52 @@ export class NftService {
     return nfts;
   }
 
+
+  async getAllLazyNftsOnSaleOwnedBy(ownerId: string) {
+    try {
+      const lazyNfts = await this.nftRepository.getAllNftsOwnedBy(ownerId);
+      let lazyNftsTransformed = lazyNfts.map((nft) => {
+        return {
+          nftName: nft.ipfsEntity.nft_name,
+          nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
+          nftPrice: nft.price,
+          nftId: nft.nft_id,
+          isMinted: false,
+        }
+      })
+      return lazyNftsTransformed;
+    }
+    catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getAllMintedNftsOnSaleOwnedBy(ownedId: string) {
+    try {
+      let mintedNfts = await this.contract.methods.getAllImageMetadatas().call();
+      mintedNfts = mintedNfts.map((nft) => {
+        return {
+          nftName: mintedNfts.name,
+          nftImageUrl: mintedNfts.imageUrl,
+          nftPrice: nft.price,
+          isMinted: true,
+          nftId: 0,
+        }
+      })
+      return mintedNfts;
+    }
+    catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getAllNftsOwnedBy(ownerId: string) {
-    return await this.nftRepository.getAllNftsOwnedBy(ownerId);
+    let nfts: Nfts[] = [];
+    nfts = nfts.concat(await this.getAllLazyNftsOnSaleOwnedBy(ownerId));
+    nfts = nfts.concat(await this.getAllMintedNftsOnSaleOwnedBy(ownerId));
+    return nfts;
   }
 
   async findOneByNft(nftId: string) {

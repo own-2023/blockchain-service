@@ -20,9 +20,13 @@ export class EthereumService {
         return { privateKey: account.private_key, address: account.address };
     }
 
-    async getBalance(address: string) {
+    async getBalanceEth(address: string) {
         const balance = await this.web3.eth.getBalance(address);
         return { balance: this.web3.utils.fromWei(balance, 'ether') };
+    }
+
+    async getBalanceWei(address: string){
+        return await this.web3.eth.getBalance(address);
     }
 
     async withdraw(userId: string, amount: string, recipientAddress: string) {

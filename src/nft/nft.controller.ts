@@ -62,15 +62,7 @@ export class NftController {
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request): Promise<GetUserNftsResponseDto[]> {
     const ownerId: string = request['user'].user_id;
-    const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
-    return nfts.map((nft) => {
-      return {
-        nftId: nft.nft_id,
-        nftPrice: nft.price,
-        nftImageUrl: `http://127.0.0.1:8080/ipfs/${nft.ipfsEntity.cid}`,
-        nftName: nft.ipfsEntity.nft_name,
-      }
-    });
+    return await this.nftService.getAllNftsOwnedBy(ownerId);
   }
 
 
