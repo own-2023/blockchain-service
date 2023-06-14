@@ -39,8 +39,15 @@ export class NftController {
   })
   @Get('get-all-nfts')
   async getAllNftsOnSale() {
-    return await this.nftService.getAllNftsOnSale();
-
+    const nfts = await this.nftService.getAllNftsOnSale();
+    return nfts.map((nft) => {
+      return {
+        nftPrice: nft.price,
+        nftName: nft.ipfsEntity.nft_name,
+        nftImageUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
+        nftId: nft.nft_id
+      }
+    })
   }
 
   @Get('get-user-lazy-minted-nfts')
@@ -61,7 +68,16 @@ export class NftController {
   @UseGuards(AuthGuard)
   async getNftsOwned(@Req() request: Request) {
     const ownerId: string = request['user'].user_id;
-    return await this.nftService.getAllNftsOwnedBy(ownerId);
+    const nfts = await this.nftService.getAllNftsOwnedBy(ownerId);
+
+    return nfts.map((nft) => {
+      return {
+        nftPrice: nft.price,
+        nftName: nft.ipfsEntity.nft_name,
+        nftImageUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
+        nftId: nft.nft_id
+      }
+    })
   }
 
   @ApiOperation({ summary: 'lazy mint an nft' })
@@ -81,7 +97,7 @@ export class NftController {
   })
   @HttpCode(200)
   async getOneNftById(@Param() params: any, getOneNftByIdDto: GetOneNftByIdDto) {
-    const nft = await this.nftService.findOneById(params.nftId)
+    const nft = await this.nftService.findOneById(params.nftId);
     let response;
     try {
       response = await axios.get('http://127.0.0.1:3000/users/username', { data: { user_id: nft.owner_id } });
@@ -95,7 +111,7 @@ export class NftController {
       nftOwner: username,
       nftName: nft.ipfsEntity.nft_name,
       nftUrl: this.nftService.getNftViewUrl(nft.ipfsEntity.cid),
-      nftIsOnSale: nft.isOnSale,
+      isNftOnSale: nft.isOnSale,
     }
 
   }
@@ -104,13 +120,19 @@ export class NftController {
     return `http://127.0.0.1:8080/ipfs/${cid}`;
   }
 
-  @Put(':nftId/put-on-sale/:newPrice')
+  @Put(':nftId/set-price/:newPrice')
   @HttpCode(200)
   async putNftOnSale(@Param() params: any) {
     const nft = await this.nftService.findOneById(params.nftId);
-
-    const newPrice = await this.nftService.putOnSale(nft, params.newPrice);
+    const newPrice = await this.nftService.setPrice(nft, params.newPrice);
     return { price: newPrice, isOnSale: true };
+  }
+
+  @Put(':nftId/put-on-sale')
+  @HttpCode(200)
+  async setPrice(@Param() params: any) {
+    const nft = await this.nftService.findOneById(params.nft_id);
+    this.nftService.putOnSale(nft);
   }
 }
 

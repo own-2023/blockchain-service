@@ -32,13 +32,21 @@ export class NftService {
     return price;
   }
 
-  async putOnSale(nft: NftEntity, newPrice: number) {
-    await this.nftRepository.setOnSale(nft, true);
-    await this.nftRepository.setPrice(nft, newPrice);
-    if (nft.isMinted === true) {
-      await this.contract.methods.setPrice(nft.token_id, newPrice).send();
+  async setPrice(nft: NftEntity, newPrice: number) {
+    const ownerAccount = await this.ethereumService.getAccountBy(nft.owner_id);
+    if (nft.isMinted) {
+      try {
+        await this.contract.methods.setPrice(nft.token_id, newPrice).send({ from: ownerAccount.address });
+      }
+      catch (err) {
+        console.error(err);
+        throw new InternalServerErrorException();
+      }
     }
-    return newPrice;
+    await this.nftRepository.setPrice(nft, newPrice);
+  }
+  async putOnSale(nft: NftEntity) {
+    await this.nftRepository.setOnSale(nft, true);
   }
 
   async buy(nftId: string, buyerId: string,) {
@@ -59,7 +67,6 @@ export class NftService {
     else {
       await this.contract.methods.buy(nft.token_id).send({ from: buyerAccount.address, gas: 4712388, value: await this.ethereumService.getBalanceWei(buyerAccount.address) });
     }
-
     try {
       nft.owner_id = buyerId;
       nft.isOnSale = false;
@@ -101,6 +108,7 @@ export class NftService {
 
   async findOneByNft(nftId: string) {
     const nft = await this.nftRepository.findOneNftById(nftId);
+    
     return nft
   }
 
