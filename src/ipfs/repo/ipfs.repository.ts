@@ -13,11 +13,11 @@ export class IpfsRepository {
   async save(ownerId: string, cid: string, filename: string, nftName: string) {
     const ipfs = new IpfsEntity();
     ipfs.cid = cid;
-    ipfs.creator_id =  ownerId;
+    ipfs.creator_id = ownerId;
     ipfs.created_at = new Date();
     ipfs.nft_name = nftName;
-    try{await this.ipfsRepository.save(ipfs)}
-    catch(err){
+    try { await this.ipfsRepository.save(ipfs) }
+    catch (err) {
       console.error(err);
       throw new InternalServerErrorException();
     }
@@ -25,6 +25,16 @@ export class IpfsRepository {
 
   async findByCid(cid: string) {
     return await this.ipfsRepository.findOne({ where: { cid } });
+  }
+
+  async getUsersMetadatas(usersId: string) {
+    try {
+      return await this.ipfsRepository.findBy({ creator_id: usersId });
+    }
+    catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
   }
 
 }

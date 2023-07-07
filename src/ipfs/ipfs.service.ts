@@ -19,6 +19,10 @@ export class IpfsService {
     
   }
 
+  getNftViewUrl(cid: string) {
+    return `http://127.0.0.1:8080/ipfs/${cid}`;
+  }
+
   async isIpfsFileExists(cid: string) {
     const result = await this.ipfsRepository.findByCid(cid);
     if(result === null){
@@ -27,5 +31,9 @@ export class IpfsService {
     else{
       return true;
     }
+  }
+
+  async getUsersMetadatas(userId: string){
+    return await this.ipfsRepository.getUsersMetadatas(userId);
   }
 }
