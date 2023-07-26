@@ -9,6 +9,9 @@ import { EthereumController } from './ethereum/ethereum.controller';
 import { EthereumService } from './ethereum/ethereum.service';
 import { EthereumModule } from './ethereum/ethereum.module';
 import * as dotenv from 'dotenv';
+import { NftEntity } from './nft/entities/nft.entity';
+import { EthereumAccountEntity } from './ethereum/entities/ethereum-account.entity';
+import { IpfsEntity } from './ipfs/entities/ipfs.entity';
 dotenv.config();
 
 @Module({
@@ -19,8 +22,8 @@ dotenv.config();
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
+    entities: [NftEntity, EthereumAccountEntity, IpfsEntity],
     autoLoadEntities: true,
-    synchronize: true,
   }), NftModule, AuthModule, EthereumModule],
   controllers: [AppController],
   providers: [

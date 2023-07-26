@@ -16,8 +16,12 @@ export class IpfsService {
     const filename = file.originalname;
     const cid = result.cid.toString();
     await this.ipfsRepository.save(ownerId, cid, filename, nftName);
+    
   }
 
+  getNftViewUrl(cid: string) {
+    return `http://127.0.0.1:8080/ipfs/${cid}`;
+  }
 
   async isIpfsFileExists(cid: string) {
     const result = await this.ipfsRepository.findByCid(cid);
@@ -27,5 +31,9 @@ export class IpfsService {
     else{
       return true;
     }
+  }
+
+  async getUsersMetadatas(userId: string){
+    return await this.ipfsRepository.getUsersMetadatas(userId);
   }
 }

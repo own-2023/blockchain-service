@@ -8,6 +8,7 @@ import { IpfsEntity } from './entities/ipfs.entity';
 import { IpfsRepository } from './repo/ipfs.repository';
 import { AuthModule } from 'src/auth/auth.module';
 import { jwtConstants } from 'src/constants';
+import { NftModule } from 'src/nft/nft.module';
 dotenv.config();
 
 

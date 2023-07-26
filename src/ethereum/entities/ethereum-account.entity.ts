@@ -1,5 +1,5 @@
-import { Column, PrimaryColumn, Entity } from "typeorm";
-
+import { Column, PrimaryColumn, Entity, OneToMany } from "typeorm";
+import { NftEntity } from "src/nft/entities/nft.entity";
 
 @Entity({
     name: 'ethereum_accounts',
@@ -14,4 +14,11 @@ export class EthereumAccountEntity{
 
     @Column()
     private_key: string;
+
+    @Column({default: 0})
+    nonce: number;
+
+    /*@OneToMany((type) => NftEntity, lazyNftEntity => lazyNftEntity.ethereumAccountEntity, {})
+    lazyNftEntity: NftEntity;*/
+
 }

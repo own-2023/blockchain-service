@@ -19,14 +19,33 @@ export class EthereumAccountRepository {
         })
     }
 
+    async incrementNonceOf(address: string) {
+        try {
+            const wallet = await this.ethereumAccountRepository.findOneBy({ address });
+            wallet.nonce += 1;
+            await this.ethereumAccountRepository.save(wallet);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    async findAccountBy(userId: string) {
+        try {
+            const wallet = await this.ethereumAccountRepository.findOne({ where: { user_id: userId } })
+            return wallet;
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
     async getAccount(userId: string) {
-        return await this.ethereumAccountRepository.findOne({
+        const account = await this.ethereumAccountRepository.findOne({
             where: {
                 user_id: userId
             }
-          });
-
-
+        });
+        return account;
     }
-     
 }

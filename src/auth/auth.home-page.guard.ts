@@ -7,6 +7,7 @@ import {
   import { JwtService } from '@nestjs/jwt';
   import { jwtConstants } from '../constants';
   import { Request } from 'express';
+
   
   @Injectable()
   export class AuthHomePageGuard implements CanActivate {
@@ -31,7 +32,7 @@ import {
         request['user'] = payload;
       } catch(err) {
         
-        console.log(err);
+        console.error(err);
       }
       return true;
     }

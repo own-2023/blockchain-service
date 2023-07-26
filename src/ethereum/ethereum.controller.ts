@@ -26,8 +26,14 @@ export class EthereumController {
     @UseGuards(AuthGuard)
     async getEthereumBalance(@Param('address') address: string, @Req() request: Request) {
         const userId: string = request['user'].user_id;
-        const balance = await this.ethereumService.getBalance(address);
+        const balance = await this.ethereumService.getBalanceEth(address);
         return balance;
+    }
+
+    @Post('withdraw')
+    @UseGuards(AuthGuard)
+    async withdraw(@Req() request: Request){
+        console.log(request); 
     }
 
 
