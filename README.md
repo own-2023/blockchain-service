@@ -1,7 +1,5 @@
 
-# Merhaba
-
-Bu proje, blokzincir teknolojileri üzerinde geliştirme yapmak isteyenler için bir örnek proje niteliğindedir. Bu proje, Nestjs kullanılarak oluşturulan bir blokzincir servisidir ve web3.js kütüphanesi kullanarak yerelde çalıştırdığımız Ganache Ethereum duğümünün (.ing node) blokzincirine bağlanır. Aynı zamanda IPFS (InterPlanetary File System) protokolünü de kullanılarak depolanmak istenen görseller burada dağınık şekilde herhangi bir ücret ödemeden depolanır ve blokzincir servisi ile entegre çalışır.
+It's a blockchain service created using Nestjs and connects to the blockchain of a locally running Ganache Ethereum node using the web3.js library. Additionally, images intended for storage are stored here in a decentralized manner using the IPFS (InterPlanetary File System) protocol without any fees, and it integrates with the blockchain service.
 
 
 # Başlangıç
@@ -9,36 +7,25 @@ Bu proje, blokzincir teknolojileri üzerinde geliştirme yapmak isteyenler için
 Bu proje yerel bir makinede çalıştırılmak isteniyorsa, öncelikle aşağıdaki adımların takip edilmesi gerekmektedir.
 
 
-# Ön Gereksinimler
+# Requirements
 
-    Node.js 18 veya daha yüksek sürümü, 18 tavsiye edilir.
-    Docker Desktop ya da Docker Engine
-
-
-# Yükleme
-
-Bu proje klonlanarak yerel makineye indirilebilir. Aşağıdaki komutları kullanarak projeyi klonlayabilirsiniz.
-
-```bash
-git clone https://github.com/bitirmeProjesi2023/blockchain-service.git
-```
+   Node.js version 18 or higher, 18 is recommended.
+Docker Desktop or Docker Engine
 
 
-Proje klonlandıktan sonra, projenin klasörüne gidin ve aşağıdaki komutu çalıştırın.
+# Usage
+
+This command installs project dependencicies
 
 ```bash
-cd blockchain-service
 npm install
 ```
-
-Bu komut,indirilen repo'ya gider ve projenin bağımlılıklarını yükler.
-
 
 # Çalıştırma
 
 Bu projeyi çalıştırmak için öncelikle Docker'ın çalışır durumda olduğundan emin olun ve docker compose komutunu çalıştırın, bu komut gerekli imageları indirir ve kurar; ganache, ipfs-kubo, mysql gibi
 
-```bash
+```bashser
 docker compose up
 ```
 
