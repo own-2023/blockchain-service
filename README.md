@@ -1,7 +1,3 @@
-
-![127298319](https://github.com/own-2023/blockchain-service/assets/105448217/36f32d33-8722-496a-a56f-4a2278fa58aa)
-
-
 Blockchain service created using Nestjs and connects to the blockchain of a locally running Ganache Ethereum node using the web3.js library. Additionally, images intended for storage are stored here in a decentralized manner using the IPFS (InterPlanetary File System) protocol without any fees, and it integrates with the blockchain service.
 
 # Requirements
