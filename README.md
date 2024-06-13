@@ -35,33 +35,3 @@ This project is tested using Jest. You can run the tests using the following com
 # unit tests
 $ npm run test
 ```
-
-# Kullanım
-
-Bu proje, NestJS kullanarak oluşturulan bir Node.js uygulamasıdır. Uygulama, aşağıdaki API endpointleri aracılığıyla kullanılabilir.
-
-Bu endpoint, endpoint1 işlemini gerçekleştirir.
-
-```bash
-
-GET /endpoint1
-
-```
-
-
-Bu endpoint, endpoint2 işlemini gerçekleştirir.
-
-```bash
-
-GET /endpoint2
-
-```
-
-
-# Katkıda Bulunma
-
-Bu proje, katkıda bulunmak isteyen geliştiriciler için açıktır. Lütfen değişiklikleriniz için bir pull request oluşturun ve açıklayıcı bir açıklama ekleyin.
-
-# Lisans
-
-Bu proje, MIT lisansı altında lisanslanmıştır.
