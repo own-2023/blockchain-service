@@ -2,11 +2,6 @@
 It's a blockchain service created using Nestjs and connects to the blockchain of a locally running Ganache Ethereum node using the web3.js library. Additionally, images intended for storage are stored here in a decentralized manner using the IPFS (InterPlanetary File System) protocol without any fees, and it integrates with the blockchain service.
 
 
-# Başlangıç
-
-Bu proje yerel bir makinede çalıştırılmak isteniyorsa, öncelikle aşağıdaki adımların takip edilmesi gerekmektedir.
-
-
 # Requirements
 
    Node.js version 18 or higher, 18 is recommended.
@@ -21,23 +16,20 @@ This command installs project dependencicies
 npm install
 ```
 
-# Çalıştırma
-
-Bu projeyi çalıştırmak için öncelikle Docker'ın çalışır durumda olduğundan emin olun ve docker compose komutunu çalıştırın, bu komut gerekli imageları indirir ve kurar; ganache, ipfs-kubo, mysql gibi
+To run this project, make sure Docker is running and execute the docker-compose command. This command will download and install the necessary images such as ganache, ipfs-kubo, mysql
 
 ```bashser
 docker compose up
 ```
+Run the blockchain service using the following command
 
-
-Ardından, aşağıdaki komutu kullanarak blokzincir servisini çalıştırın.
 ```bash
 npm run start:dev
 ```
 
-## Test Etme
+## Testing
 
-Bu proje, Jest kullanılarak test edilir. Aşağıdaki komutu kullanarak testleri çalıştırabilirsiniz.Daha test dosyaları yazılmadı
+This project is tested using Jest. You can run the tests using the following command. 
 
 ```bash
 # unit tests
